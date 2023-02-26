@@ -1,6 +1,6 @@
 import { getSmoothStepPath, MarkerType, SmoothStepEdgeProps } from 'reactflow';
 
-const DefaultEdge = ({
+export const DefaultEdge = ({
   id,
   sourceX,
   sourceY,
@@ -34,5 +34,3 @@ const DefaultEdge = ({
     </>
   );
 }
-
-export default DefaultEdge;
