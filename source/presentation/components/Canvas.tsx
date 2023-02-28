@@ -23,6 +23,9 @@ export const Canvas = ({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      fitViewOptions={{ 
+        padding: 4
+      }}
       defaultEdgeOptions={{
         type: "default",
         markerEnd: {

@@ -1,35 +1,32 @@
+import { Node } from "@/domain/entities/Node";
 import { JSXElementConstructor } from "react";
-
-interface Node {
-  [key: string]: unknown
-}
 
 interface Edge {
   [key: string]: unknown
 }
 
-export interface IUseNodesParams {
+export interface IUseNodesParams<T = undefined> {
   initialNodes: Node[];
 }
 
-export interface IUseNodesUtilities {
+export interface IUseNodesUtilities<T = undefined> {
   /* ===== PROPERTIES ===== */
-  nodes: Node[];
+  nodes: Node<T>[];
   edges: Edge[];
   Canvas: JSX.Element;
 
   /* ===== METHODS ===== */
-  addNodeAtStart: (node: Node) => void;
-  addNodeAtPosition: (node: Node) => void;
-  addNodeAtEnd: (node: Node) => void;
+  addNodeAtStart: (node: Node<T>) => void;
+  addNodeAtPosition: (node: Node<T>) => void;
+  addNodeAtEnd: (node: Node<T>) => void;
   
   removeNodeAtStart: () => void;
   removeNodeAtPosition: (index: number) => void;
   removeNodeAtEnd: () => void;
   
-  getNodeAt: (index: number) => Node;
-  getNodeByValue: (value: number | string) => Node;
-  getNodeById: (id: string) => Node;
+  getNodeAt: (index: number) => Node<T>;
+  getNodeByValue: (value: number | string) => Node<T>;
+  getNodeById: (id: string) => Node<T>;
   
   getEdgeAt: (index: number) => Edge;
   getEdgeById: (id: string) => Edge;
@@ -46,4 +43,4 @@ export interface IUseNodesUtilities {
   emphasisEdgeByNodeId: (id: string) => void;
 }
 
-export type TUseNodes = (params: IUseNodesParams) => IUseNodesUtilities;
+export type TUseNodes<T = undefined> = (params: IUseNodesParams<T>) => IUseNodesUtilities<T>;

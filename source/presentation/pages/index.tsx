@@ -1,7 +1,9 @@
 import { ListNodeProps } from "@/presentation/components/ListNode";
+import React from "react";
 import { Node } from "reactflow";
 import "reactflow/dist/style.css";
-import { useNodes } from "../hooks/useNodes";
+import { useNodes } from "@/presentation/hooks/useNodes";
+import generateValueBetween from "@/utils/generateValueBetween";
 
 const initialNodes: Node<ListNodeProps>[] = [];
 
@@ -12,7 +14,7 @@ export default function Home(): JSX.Element {
 
   const buttonStart = () => {
     addNodeAtStart({
-      value: 'dfsdf',
+      value: generateValueBetween(1, 10),
       nextNodeId: 2,
       prevNodeId: 1,
     })
@@ -20,7 +22,7 @@ export default function Home(): JSX.Element {
 
   const buttonEnd = () => {
     addNodeAtEnd({
-      value: 'dfsdf',
+      value: generateValueBetween(1, 10),
       nextNodeId: 2,
       prevNodeId: 1,
     })
@@ -43,7 +45,9 @@ export default function Home(): JSX.Element {
         </button>
       </div>
       <main className="h-full w-full bg-white">
-        { Canvas }
+        <React.StrictMode>
+          { Canvas }
+        </React.StrictMode>
       </main>
     </div>
   );

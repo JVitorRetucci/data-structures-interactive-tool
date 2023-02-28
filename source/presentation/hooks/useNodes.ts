@@ -1,6 +1,7 @@
 import {
   IUseNodesParams,
   IUseNodesUtilities,
+  TUseNodes,
 } from "@/presentation/@types/TUseNodes";
 import { useCallback, useMemo } from "react";
 import { addEdge, Node, useEdgesState, useNodesState } from "reactflow";
@@ -8,7 +9,7 @@ import { Canvas } from "../components/Canvas";
 import { DefaultEdge } from "../components/DefaultEdge";
 import { ListNode, ListNodeProps } from "../components/ListNode";
 
-export const useNodes = ({
+export const useNodes: TUseNodes = ({
   initialNodes = [],
 }: IUseNodesParams): IUseNodesUtilities => {
   // =================================================================
@@ -53,7 +54,7 @@ export const useNodes = ({
             x: lastPosition.x + (width ?? 0) + 50,
             y: lastPosition.y,
           },
-          draggable: false,
+          // draggable: false,
           data: {
             value: newNodeParams.value,
             nextNodeId: newNodeParams.nextNodeId,
@@ -78,7 +79,9 @@ export const useNodes = ({
     [setNodes, edges]
   );
 
-  const addNodeAtPosition = () => undefined;
+  const addNodeAtPosition = () => {
+    throw new Error("Not implemented yet");
+  };
 
   const addNodeAtStart = useCallback(
     (newNodeParams) => {
@@ -94,10 +97,7 @@ export const useNodes = ({
             },
           ];
         }
-        const {
-          position: firstPosition,
-          id: firstId,
-        } = nodes.at(0) as Node<ListNodeProps>;
+        const { position: firstPosition, id: firstId } = nodes[0] as Node<ListNodeProps>;
 
         const newNode: Node<ListNodeProps> = {
           id: `${nodes.length + 1}`,
@@ -131,37 +131,69 @@ export const useNodes = ({
     [setNodes, edges]
   );
 
-  const removeNodeAtStart = () => undefined;
+  const removeNodeAtStart = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const removeNodeAtPosition = () => undefined;
+  const removeNodeAtPosition = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const removeNodeAtEnd = () => undefined;
+  const removeNodeAtEnd = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const getNodeAt = () => undefined;
+  const getNodeAt = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const getNodeByValue = () => undefined;
+  const getNodeByValue = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const getNodeById = () => undefined;
+  const getNodeById = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const getEdgeAt = () => undefined;
+  const getEdgeAt = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const getEdgeById = () => undefined;
+  const getEdgeById = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const getEdgeByNodeId = () => undefined;
+  const getEdgeByNodeId = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const emphasisNodeByPosition = () => undefined;
+  const emphasisNodeByPosition = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const emphasisNodeById = () => undefined;
+  const emphasisNodeById = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const disableNodeByPosition = () => undefined;
+  const disableNodeByPosition = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const disableNodeById = () => undefined;
+  const disableNodeById = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const emphasisEdgeAt = () => undefined;
+  const emphasisEdgeAt = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const emphasisEdgeById = () => undefined;
+  const emphasisEdgeById = () => {
+    throw new Error("Not implemented yet");
+  };
 
-  const emphasisEdgeByNodeId = () => undefined;
+  const emphasisEdgeByNodeId = () => {
+    throw new Error("Not implemented yet");
+  };
 
   return {
     Canvas: Canvas({
