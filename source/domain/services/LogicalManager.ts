@@ -1,6 +1,5 @@
 import { Node as NodeEntity } from "@/domain/entities/Node";
 import { PositionManager } from "@/domain/services/PositionManager";
-import Position from "@/domain/entities/Position";
 
 type Node = NodeEntity<unknown>; // Node.data type is not important here.
 
@@ -29,7 +28,7 @@ export class LogicalManager {
     this._nodes = nodes;
   }
 
-  setTargetNode(node: Node) {
+  setTargetNode(node: Node): void {
     this.nodes = this.nodes.reduce((acc, value, index) => {
       if (value.id === node.id) {
         acc[index] = node;
