@@ -4,19 +4,16 @@ import { Handle, NodeProps, Position } from "reactflow";
 export interface ListNodeProps {
   value: number;
   nextNodeId: number;
-  prevNodeId?: number;
   isActive?: boolean;
 }
 
-export const ListNode = ({id, data: {value, nextNodeId, prevNodeId, isActive = false }}: NodeProps<ListNodeProps>): JSX.Element => {
-  
+export const ListNode = ({id, data: {value, nextNodeId, isActive = false }}: NodeProps<ListNodeProps>): JSX.Element => {
   return (
     <>
       <Handle type="target" position={Position.Left} />
-      <div className={classNames("flex flex-col justify-center w-fit border-black border rounded bg-white", isActive ? 'border-4 border-blue-700' : '')}>
+      <div className={classNames("flex flex-col justify-center w-fit border-black border rounded bg-white", isActive ? 'ring-4 ring-blue-700' : '')}>
         <span className="text-center p-1 text-xs border-b border-black">{ id }</span>
         <div className="flex justify-center w-fit">
-          {!!prevNodeId && <p className="p-4 border-r border-black"> {prevNodeId} </p>}
           <p className="p-4 border-r border-black">{ value }</p>
           <p className="p-4">{ nextNodeId }</p>
         </div>
