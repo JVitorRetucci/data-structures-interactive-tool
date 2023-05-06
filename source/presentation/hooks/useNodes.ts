@@ -4,10 +4,11 @@ import {
   TUseNodes,
 } from "@/presentation/@types/TUseNodes";
 import { useCallback, useMemo } from "react";
-import { addEdge, Node, useEdgesState, useNodesState } from "reactflow";
+import { addEdge, MarkerType, Node, useEdgesState, useNodesState } from "reactflow";
 import { Canvas } from "../components/Canvas";
 import { DefaultEdge } from "../components/DefaultEdge";
 import { ListNode, ListNodeProps } from "../components/ListNode";
+import generateRandomId from "@/utils/generateRandomId";
 
 export const useNodes: TUseNodes = ({
   initialNodes = [],
@@ -33,10 +34,10 @@ export const useNodes: TUseNodes = ({
         if (!nodes.length) {
           return [
             {
-              id: `${nodes.length + 1}`,
+              id: `#${generateRandomId()}`,
               position: { x: 0, y: 0 },
               draggable: false,
-              data: { value: 4, nextNodeId: 0, prevNodeId: 0 },
+              data: { value: 4, nextNodeId: 0 },
               type: "listNode",
             },
           ];
@@ -44,21 +45,20 @@ export const useNodes: TUseNodes = ({
 
         const {
           position: lastPosition,
-          width: width = 0,
+          width = 0,
           id: lastId,
         } = nodes.at(-1) as Node<ListNodeProps>;
 
         const newNode: Node<ListNodeProps> = {
-          id: `${nodes.length + 1}`,
+          id: `#${generateRandomId()}`,
           position: {
             x: lastPosition.x + (width ?? 0) + 50,
             y: lastPosition.y,
           },
-          // draggable: false,
+          draggable: false,
           data: {
             value: newNodeParams.value,
             nextNodeId: newNodeParams.nextNodeId,
-            prevNodeId: newNodeParams.prevNodeId,
           },
           type: "listNode",
         };
@@ -68,6 +68,14 @@ export const useNodes: TUseNodes = ({
               id: `e${lastId}-${newNode.id}`,
               source: lastId,
               target: newNode.id,
+              markerEnd: {
+                type: MarkerType.ArrowClosed,
+                color: '#ff0070'
+              },
+              style:{
+                strokeWidth: 2,
+                stroke: '#FF0072',
+              }
             },
             edges
           ),
@@ -79,7 +87,7 @@ export const useNodes: TUseNodes = ({
     [setNodes, edges]
   );
 
-  const addNodeAtPosition = () => {
+  const addNodeAtPosition = (): void => {
     throw new Error("Not implemented yet");
   };
 
@@ -89,10 +97,10 @@ export const useNodes: TUseNodes = ({
         if (!nodes.length) {
           return [
             {
-              id: `${nodes.length + 1}`,
+              id: `#${generateRandomId()}`,
               position: { x: 0, y: 0 },
               draggable: false,
-              data: { value: 4, nextNodeId: 0, prevNodeId: 0 },
+              data: { value: 4, nextNodeId: 0 },
               type: "listNode",
             },
           ];
@@ -100,17 +108,15 @@ export const useNodes: TUseNodes = ({
         const { position: firstPosition, id: firstId } = nodes[0] as Node<ListNodeProps>;
 
         const newNode: Node<ListNodeProps> = {
-          id: `${nodes.length + 1}`,
-          width: 100,
+          id: `#${generateRandomId()}`,
           position: {
-            x: firstPosition.x - 250,
+            x: firstPosition.x - 150,
             y: firstPosition.y,
           },
           draggable: false,
           data: {
             value: newNodeParams.value,
             nextNodeId: newNodeParams.nextNodeId,
-            prevNodeId: newNodeParams.prevNodeId,
           },
           type: "listNode",
         };
@@ -131,59 +137,59 @@ export const useNodes: TUseNodes = ({
     [setNodes, edges]
   );
 
-  const removeNodeAtStart = () => {
+  const removeNodeAtStart = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const removeNodeAtPosition = () => {
+  const removeNodeAtPosition = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const removeNodeAtEnd = () => {
+  const removeNodeAtEnd = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const getNodeAt = () => {
+  const getNodeAt = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const getNodeByValue = () => {
+  const getNodeByValue = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const getNodeById = () => {
+  const getNodeById = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const getEdgeAt = () => {
+  const getEdgeAt = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const getEdgeById = () => {
+  const getEdgeById = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const getEdgeByNodeId = () => {
+  const getEdgeByNodeId = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const emphasisNodeByPosition = () => {
+  const emphasisNodeByPosition = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const emphasisNodeById = () => {
+  const emphasisNodeById = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const disableNodeByPosition = () => {
+  const disableNodeByPosition = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const disableNodeById = () => {
+  const disableNodeById = (): void => {
     throw new Error("Not implemented yet");
   };
 
-  const emphasisEdgeAt = () => {
+  const emphasisEdgeAt = (): void => {
     throw new Error("Not implemented yet");
   };
 
@@ -191,7 +197,7 @@ export const useNodes: TUseNodes = ({
     throw new Error("Not implemented yet");
   };
 
-  const emphasisEdgeByNodeId = () => {
+  const emphasisEdgeByNodeId = (): void => {
     throw new Error("Not implemented yet");
   };
 
