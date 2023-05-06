@@ -8,8 +8,6 @@ import { Editor } from "@monaco-editor/react";
 
 const initialNodes: Array<Node<ListNodeProps>> = [];
 
-const initialEdges = [];
-
 export default function Home(): JSX.Element {
   const { Canvas, addNodeAtStart, addNodeAtEnd } = useNodes({ initialNodes });
 
