@@ -54,7 +54,7 @@ export class LogicalManager {
   }
 
   updateTargetPosition(node: Node): void {
-    const result = this._positionManager.updateTargetPosition(node);
+    const result = this._positionManager.updateTargetPosition(this.nodes, node.id);
     if (result.isLeft()) throw result.value;
 
     const targetNode = this.nodes.find(
