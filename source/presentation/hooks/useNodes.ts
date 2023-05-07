@@ -4,11 +4,22 @@ import {
   TUseNodes,
 } from "@/presentation/@types/TUseNodes";
 import { useCallback, useMemo } from "react";
-import { addEdge, MarkerType, Node, useEdgesState, useNodesState } from "reactflow";
+import {
+  addEdge,
+  MarkerType,
+  Node,
+  useEdgesState,
+  useNodesState,
+} from "reactflow";
 import { Canvas } from "../components/Canvas";
 import { DefaultEdge } from "../components/DefaultEdge";
 import { ListNode, ListNodeProps } from "../components/ListNode";
 import generateRandomId from "@/utils/generateRandomId";
+import { ListManager } from "@/infra/positionManagers/ListManager";
+import { LinkedList } from "@/infra/dataStructures/LinkedList";
+
+const positionManager = new ListManager({ padding: 60 });
+const ll = new LinkedList({ positionManager });
 
 export const useNodes: TUseNodes = ({
   initialNodes = [],
@@ -30,58 +41,39 @@ export const useNodes: TUseNodes = ({
 
   const addNodeAtEnd = useCallback(
     (newNodeParams) => {
-      setNodes((nodes) => {
-        if (!nodes.length) {
-          return [
-            {
-              id: `#${generateRandomId()}`,
-              position: { x: 0, y: 0 },
-              draggable: false,
-              data: { value: 4, nextNodeId: 0 },
-              type: "listNode",
+      setNodes(() => {
+        ll.addNodeAtEnd(newNodeParams);
+
+        const updatedEdges = ll.nodes.reduce((acc, current, index) => {
+          if (!ll.nodes[index+1]) return acc;
+          const nextId = ll.nodes[index + 1].id ?? undefined;
+
+          const edge = {
+            id: `e${current.id}-${nextId}`,
+            source: current.id,
+            target: nextId,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: "#ff0070",
             },
-          ];
-        }
+            style: {
+              strokeWidth: 2,
+              stroke: "#FF0072",
+            },
+          };
 
-        const {
-          position: lastPosition,
-          width = 0,
-          id: lastId,
-        } = nodes.at(-1) as Node<ListNodeProps>;
+          return [...acc, edge];
+        }, []);
 
-        const newNode: Node<ListNodeProps> = {
-          id: `#${generateRandomId()}`,
-          position: {
-            x: lastPosition.x + (width ?? 0) + 50,
-            y: lastPosition.y,
-          },
-          draggable: false,
-          data: {
-            value: newNodeParams.value,
-            nextNodeId: newNodeParams.nextNodeId,
-          },
+        setEdges(updatedEdges);
+
+        return ll.nodes.map((item) => ({
+          id: item.id,
+          position: item.position,
+          draggable: true,
+          data: item.value,
           type: "listNode",
-        };
-        setEdges([
-          ...addEdge(
-            {
-              id: `e${lastId}-${newNode.id}`,
-              source: lastId,
-              target: newNode.id,
-              markerEnd: {
-                type: MarkerType.ArrowClosed,
-                color: '#ff0070'
-              },
-              style:{
-                strokeWidth: 2,
-                stroke: '#FF0072',
-              }
-            },
-            edges
-          ),
-        ]);
-
-        return [...nodes, newNode];
+        }));
       });
     },
     [setNodes, edges]
@@ -93,45 +85,39 @@ export const useNodes: TUseNodes = ({
 
   const addNodeAtStart = useCallback(
     (newNodeParams) => {
-      setNodes((nodes) => {
-        if (!nodes.length) {
-          return [
-            {
-              id: `#${generateRandomId()}`,
-              position: { x: 0, y: 0 },
-              draggable: false,
-              data: { value: 4, nextNodeId: 0 },
-              type: "listNode",
-            },
-          ];
-        }
-        const { position: firstPosition, id: firstId } = nodes[0] as Node<ListNodeProps>;
+      setNodes(() => {
+        ll.addNodeAtStart(newNodeParams);
 
-        const newNode: Node<ListNodeProps> = {
-          id: `#${generateRandomId()}`,
-          position: {
-            x: firstPosition.x - 150,
-            y: firstPosition.y,
-          },
-          draggable: false,
-          data: {
-            value: newNodeParams.value,
-            nextNodeId: newNodeParams.nextNodeId,
-          },
+        const updatedEdges = ll.nodes.reduce((acc, current, index) => {
+          if (!ll.nodes[index+1]) return acc;
+          const nextId = ll.nodes[index + 1].id ?? undefined;
+
+          const edge = {
+            id: `e${current.id}-${nextId}`,
+            source: current.id,
+            target: nextId,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: "#ff0070",
+            },
+            style: {
+              strokeWidth: 2,
+              stroke: "#FF0072",
+            },
+          };
+
+          return [...acc, edge];
+        }, []);
+
+        setEdges(updatedEdges);
+
+        return ll.nodes.map((item) => ({
+          id: item.id,
+          position: item.position,
+          draggable: true,
+          data: item.value,
           type: "listNode",
-        };
-        setEdges([
-          ...addEdge(
-            {
-              id: `e${firstId}-${newNode.id}`,
-              source: newNode.id,
-              target: firstId,
-            },
-            edges
-          ),
-        ]);
-
-        return [newNode, ...nodes];
+        }));
       });
     },
     [setNodes, edges]

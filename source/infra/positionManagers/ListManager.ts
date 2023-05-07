@@ -22,19 +22,19 @@ export class ListManager implements PositionManager {
     nodes: Node[]
   ): TEither<TApplicationError, Record<NodeId, Position>> {
     const positions = nodes.reduce((acc, current, index) => {
-      if (!index)
+      const prev = nodes[index-1];
+      
+      if (!prev)
         return {
           [current.id]: new Position(this._padding, this._padding),
         };
 
-      const lastNodePosition = nodes[index - 1].position;
-
-      return {
-        ...acc,
-        [current.id]: new Position(lastNodePosition.x + 50, this._padding),
-      };
-    }, {});
-
+        return {
+          ...acc,
+          [current.id]: new Position((this._padding > prev.position.x ? this._padding : prev.position.x) + 200, this._padding),
+        };
+      }, {});
+      
     return right(positions);
   }
 
@@ -57,7 +57,7 @@ export class ListManager implements PositionManager {
 
       return {
         ...acc,
-        [current.id]: new Position(lastNodePosition.x + 50, this._padding),
+        [current.id]: new Position(lastNodePosition.x + 200, this._padding),
       };
     }, {});
 

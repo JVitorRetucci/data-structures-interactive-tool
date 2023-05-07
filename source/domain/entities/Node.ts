@@ -21,4 +21,12 @@ export class Node<T = string> {
     this.value = value;
     this.connectedNodesIds = connectedNodesIds
   }
+
+  public updateValue(value: T): void{
+    this.value = value;
+  }
+
+  public updateConnectedNodesIds(values: string[]): void{
+    this.connectedNodesIds = values;
+  }
 }

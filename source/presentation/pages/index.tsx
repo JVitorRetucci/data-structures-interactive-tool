@@ -12,17 +12,11 @@ export default function Home(): JSX.Element {
   const { Canvas, addNodeAtStart, addNodeAtEnd } = useNodes({ initialNodes });
 
   const buttonStart = () => {
-    addNodeAtStart({
-      value: generateValueBetween(1, 10),
-      nextNodeId: 2,
-    });
+    addNodeAtStart(generateValueBetween(1, 10).toString());
   };
 
   const buttonEnd = () => {
-    addNodeAtEnd({
-      value: generateValueBetween(1, 10),
-      nextNodeId: 2,
-    });
+    addNodeAtEnd(generateValueBetween(1, 10).toString());
   };
 
   return (

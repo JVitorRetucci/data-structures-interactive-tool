@@ -1,24 +1,23 @@
 import { Node } from "@/domain/entities/Node";
-import { JSXElementConstructor } from "react";
 
 interface Edge {
   [key: string]: unknown
 }
 
 export interface IUseNodesParams<T = undefined> {
-  initialNodes: Node[];
+  initialNodes: Array<Node<T>>;
 }
 
 export interface IUseNodesUtilities<T = undefined> {
   /* ===== PROPERTIES ===== */
-  nodes: Node<T>[];
+  nodes: Array<Node<T>>;
   edges: Edge[];
   Canvas: JSX.Element;
 
   /* ===== METHODS ===== */
-  addNodeAtStart: (node: Node<T>) => void;
+  addNodeAtStart: (value: string) => void;
   addNodeAtPosition: (node: Node<T>) => void;
-  addNodeAtEnd: (node: Node<T>) => void;
+  addNodeAtEnd: (value: string) => void;
   
   removeNodeAtStart: () => void;
   removeNodeAtPosition: (index: number) => void;
