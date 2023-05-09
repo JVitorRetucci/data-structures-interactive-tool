@@ -10,7 +10,7 @@ import { DialogWrapper } from "@/presentation/components/DialogWrapper";
 const initialNodes: Array<Node<ListNodeProps>> = [];
 
 export default function Home(): JSX.Element {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const { Canvas, addNodeAtStart, addNodeAtEnd } = useNodes({ initialNodes });
 
   const buttonStart = (): void => {
@@ -28,7 +28,7 @@ export default function Home(): JSX.Element {
           isOpen={isOpen}
           setIsOpen={setIsOpen}
         >
-          <p>olamundo</p>
+          olamundo
         </DialogWrapper>
         <Editor
           width="20vw"

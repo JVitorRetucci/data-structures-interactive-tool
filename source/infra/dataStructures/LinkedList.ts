@@ -22,7 +22,7 @@ export class LinkedList {
     this._logicalManager = new LogicalManager({
       positionManager,
       initialNodes: [new Node<T>({
-        id:`#${generateRandomId()}`,
+        id: generateRandomId(),
         position: new Position(0,0),
         value: {
           value: "HEAD",
@@ -41,7 +41,7 @@ export class LinkedList {
     const newNodes = [
       this.nodes[0],
       new Node<T>({
-        id: `#${generateRandomId()}`,
+        id: generateRandomId(),
         position: new Position(0, 0),
         value: {
           value: value,
@@ -57,7 +57,7 @@ export class LinkedList {
   }
 
   public addNodeAtEnd(value: string): Array<Node<T>> {
-    const newId = `#${generateRandomId()}`;
+    const newId = generateRandomId();
 
     this.nodes.at(-1)?.updateValue({ value: this.nodes.at(-1)?.value.value as string, nextNodeId: newId });
     this.nodes.at(-1)?.updateConnectedNodesIds([newId]);

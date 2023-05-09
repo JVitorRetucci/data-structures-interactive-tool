@@ -21,17 +21,21 @@ export class ListManager implements PositionManager {
   updatePositions(
     nodes: Node[]
   ): TEither<TApplicationError, Record<NodeId, Position>> {
+    let sum: number = this._padding;
+
     const positions = nodes.reduce((acc, current, index) => {
       const prev = nodes[index-1];
       
       if (!prev)
         return {
-          [current.id]: new Position(this._padding, this._padding),
+          [current.id]: new Position(sum, this._padding),
         };
+
+        sum += 200;
 
         return {
           ...acc,
-          [current.id]: new Position((this._padding > prev.position.x ? this._padding : prev.position.x) + 200, this._padding),
+          [current.id]: new Position(sum, this._padding),
         };
       }, {});
       
