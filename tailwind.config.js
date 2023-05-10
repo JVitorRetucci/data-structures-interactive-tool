@@ -6,7 +6,11 @@ module.exports = {
   ],
   mode: 'jit',
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'editor': '#1e1e1e'
+      }
+    },
   },
   variants: {
     extend: {},

@@ -7,14 +7,12 @@ import { useCallback, useMemo } from "react";
 import {
   addEdge,
   MarkerType,
-  Node,
   useEdgesState,
   useNodesState,
 } from "reactflow";
 import { Canvas } from "../components/Canvas";
-import { DefaultEdge } from "../components/DefaultEdge";
-import { ListNode, ListNodeProps } from "../components/ListNode";
-import generateRandomId from "@/utils/generateRandomId";
+import { DefaultEdge } from "@/presentation/components/DefaultEdge";
+import { ListNode } from "@/presentation/components/ListNode";
 import { ListManager } from "@/infra/positionManagers/ListManager";
 import { LinkedList } from "@/infra/dataStructures/LinkedList";
 

@@ -24,7 +24,7 @@ export const ListNode = ({id, data: {value, nextNodeId, isActive = false }}: Nod
           </p>
         </div>
       </div>
-      <Handle type="source" position={Position.Right} />
+      <Handle type="source" position={Position.Right} isConnectable={false} />
     </>
   )
 }
