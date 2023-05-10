@@ -40,6 +40,8 @@ export interface IUseNodesUtilities<T = undefined> {
   emphasisEdgeAt: (index: number) => void;
   emphasisEdgeById: (id: string) => void;
   emphasisEdgeByNodeId: (id: string) => void;
+
+  setNodesByJSON: (nodes: Array<Node<T>>) => void;
 }
 
 export type TUseNodes<T = undefined> = (params: IUseNodesParams<T>) => IUseNodesUtilities<T>;
