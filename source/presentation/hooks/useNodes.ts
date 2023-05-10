@@ -4,17 +4,13 @@ import {
   TUseNodes,
 } from "@/presentation/@types/TUseNodes";
 import { useCallback, useMemo } from "react";
-import {
-  addEdge,
-  MarkerType,
-  useEdgesState,
-  useNodesState,
-} from "reactflow";
+import { addEdge, MarkerType, useEdgesState, useNodesState } from "reactflow";
 import { Canvas } from "../components/Canvas";
 import { DefaultEdge } from "@/presentation/components/DefaultEdge";
 import { ListNode } from "@/presentation/components/ListNode";
 import { ListManager } from "@/infra/positionManagers/ListManager";
 import { LinkedList } from "@/infra/dataStructures/LinkedList";
+import { Node } from "@/domain/entities/Node";
 
 const positionManager = new ListManager({ padding: 60 });
 const ll = new LinkedList({ positionManager });
@@ -37,13 +33,54 @@ export const useNodes: TUseNodes = ({
 
   // =================================================================
 
+  const setNodesByJSON = useCallback(
+    (nodes: Array<Node<unknown>>): void => {
+      ll.setNodesByJSON(nodes);
+      
+
+      const edges = ll.nodes.reduce((acc, current, index) => {
+        if (!ll.nodes[index + 1]) return acc;
+        const nextId = ll.nodes[index + 1].id ?? undefined;
+
+        const edge = {
+          id: `e${current.id}-${nextId}`,
+          source: current.id,
+          target: nextId,
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: "#ff0070",
+          },
+          style: {
+            strokeWidth: 2,
+            stroke: "#FF0072",
+          },
+        };
+
+        return [...acc, edge];
+      }, []);
+
+      setEdges(edges);
+
+      setNodes(
+        ll.nodes.map((item) => ({
+          id: item.id,
+          position: item.position,
+          draggable: true,
+          data: item.value,
+          type: "listNode",
+        }))
+      );
+    },
+    [nodes, setNodes]
+  );
+
   const addNodeAtEnd = useCallback(
     (newNodeParams) => {
       setNodes(() => {
         ll.addNodeAtEnd(newNodeParams);
 
         const updatedEdges = ll.nodes.reduce((acc, current, index) => {
-          if (!ll.nodes[index+1]) return acc;
+          if (!ll.nodes[index + 1]) return acc;
           const nextId = ll.nodes[index + 1].id ?? undefined;
 
           const edge = {
@@ -87,7 +124,7 @@ export const useNodes: TUseNodes = ({
         ll.addNodeAtStart(newNodeParams);
 
         const updatedEdges = ll.nodes.reduce((acc, current, index) => {
-          if (!ll.nodes[index+1]) return acc;
+          if (!ll.nodes[index + 1]) return acc;
           const nextId = ll.nodes[index + 1].id ?? undefined;
 
           const edge = {
@@ -217,5 +254,6 @@ export const useNodes: TUseNodes = ({
     emphasisEdgeAt,
     emphasisEdgeById,
     emphasisEdgeByNodeId,
+    setNodesByJSON,
   };
 };

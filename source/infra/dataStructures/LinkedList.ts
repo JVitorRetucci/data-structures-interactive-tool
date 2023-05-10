@@ -78,6 +78,33 @@ export class LinkedList {
     this.updateNodes(newNodes);
     return this.nodes;
   }
+  
+  setNodesByJSON(nodes: Array<Node<T>>): void {
+    const newNodes = nodes.map((node, index) => {
+      const next = nodes.find((nxt) => node.connectedNodesIds.includes(nxt.id));
+
+      return new Node<T>({
+        id: node.id ?? generateRandomId(),
+        position: new Position(0, 0),
+        value: {
+          value: node.value.value,
+          nextNodeId: next?.id ?? index + 1 !== nodes.length ? nodes[index+1].id : 'TAIL'
+        },
+        connectedNodesIds: !next?.id ? [] : [next?.id],
+      })
+      
+    })
+
+    this.updateNodes([new Node<T>({
+      id: generateRandomId(),
+      position: new Position(0,0),
+      value: {
+        value: "HEAD",
+        nextNodeId: newNodes[0].id,
+      },
+      connectedNodesIds: [],
+    }) , ...newNodes]);
+  }
 
   private updateNodes(nodes: Array<Node<T>>): void {
     this._logicalManager.nodes = nodes;

@@ -8,7 +8,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'editor': '#1e1e1e'
+        'editor': '#1e1e1e',
+        dracula: {
+          green: '#0DFA83',
+          pink: '#FF79C5',
+          purple: '#BF93F6',
+          red: '#FF555A',
+          cyan: '#7BE9FB',
+          orange: '#FFB873',
+          yellow: '#F1FA94'
+        }
       }
     },
   },
