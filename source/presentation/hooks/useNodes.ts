@@ -13,7 +13,7 @@ import { LinkedList } from "@/domain/services/dataStructures/LinkedList";
 import { Node } from "@/domain/entities/Node";
 
 const positionManager = new ListManager({ padding: 60 });
-const ll = new LinkedList({ positionManager });
+const linkedList = new LinkedList({ positionManager });
 
 export const useNodes: TUseNodes = ({
   initialNodes = [],
@@ -35,12 +35,11 @@ export const useNodes: TUseNodes = ({
 
   const setNodesByJSON = useCallback(
     (nodes: Array<Node<unknown>>): void => {
-      ll.setNodesByJSON(nodes);
-      
+      linkedList.setNodesByJSON(nodes);
 
-      const edges = ll.nodes.reduce((acc, current, index) => {
-        if (!ll.nodes[index + 1]) return acc;
-        const nextId = ll.nodes[index + 1].id ?? undefined;
+      const edges = linkedList.nodes.reduce((acc, current, index) => {
+        if (!linkedList.nodes[index + 1]) return acc;
+        const nextId = linkedList.nodes[index + 1].id ?? undefined;
 
         const edge = {
           id: `e${current.id}-${nextId}`,
@@ -62,7 +61,7 @@ export const useNodes: TUseNodes = ({
       setEdges(edges);
 
       setNodes(
-        ll.nodes.map((item) => ({
+        linkedList.nodes.map((item) => ({
           id: item.id,
           position: item.position,
           draggable: true,
@@ -77,11 +76,11 @@ export const useNodes: TUseNodes = ({
   const addNodeAtEnd = useCallback(
     (newNodeParams) => {
       setNodes(() => {
-        ll.addNodeAtEnd(newNodeParams);
+        linkedList.addNodeAtEnd(newNodeParams);
 
-        const updatedEdges = ll.nodes.reduce((acc, current, index) => {
-          if (!ll.nodes[index + 1]) return acc;
-          const nextId = ll.nodes[index + 1].id ?? undefined;
+        const updatedEdges = linkedList.nodes.reduce((acc, current, index) => {
+          if (!linkedList.nodes[index + 1]) return acc;
+          const nextId = linkedList.nodes[index + 1].id ?? undefined;
 
           const edge = {
             id: `e${current.id}-${nextId}`,
@@ -102,7 +101,7 @@ export const useNodes: TUseNodes = ({
 
         setEdges(updatedEdges);
 
-        return ll.nodes.map((item) => ({
+        return linkedList.nodes.map((item) => ({
           id: item.id,
           position: item.position,
           draggable: true,
@@ -121,11 +120,11 @@ export const useNodes: TUseNodes = ({
   const addNodeAtStart = useCallback(
     (newNodeParams) => {
       setNodes(() => {
-        ll.addNodeAtStart(newNodeParams);
+        linkedList.addNodeAtStart(newNodeParams);
 
-        const updatedEdges = ll.nodes.reduce((acc, current, index) => {
-          if (!ll.nodes[index + 1]) return acc;
-          const nextId = ll.nodes[index + 1].id ?? undefined;
+        const updatedEdges = linkedList.nodes.reduce((acc, current, index) => {
+          if (!linkedList.nodes[index + 1]) return acc;
+          const nextId = linkedList.nodes[index + 1].id ?? undefined;
 
           const edge = {
             id: `e${current.id}-${nextId}`,
@@ -146,7 +145,7 @@ export const useNodes: TUseNodes = ({
 
         setEdges(updatedEdges);
 
-        return ll.nodes.map((item) => ({
+        return linkedList.nodes.map((item) => ({
           id: item.id,
           position: item.position,
           draggable: true,
@@ -194,9 +193,14 @@ export const useNodes: TUseNodes = ({
     throw new Error("Not implemented yet");
   };
 
-  const emphasisNodeByPosition = (): void => {
-    throw new Error("Not implemented yet");
-  };
+  const emphasisNodeByPosition = useCallback(
+    (index: number): void => {
+      const emphasized = nodes[index];
+      emphasized.data.isActive = true;
+      setNodes([...nodes.filter((_, idx) => idx !== index), emphasized]);
+    },
+    [setNodes, nodes]
+  );
 
   const emphasisNodeById = (): void => {
     throw new Error("Not implemented yet");
