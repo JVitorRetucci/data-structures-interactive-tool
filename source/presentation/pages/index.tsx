@@ -1,6 +1,6 @@
 /* eslint-disable no-extra-boolean-cast */
 import { ListNodeProps } from "@/presentation/components/ListNode";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Node } from "reactflow";
 import "reactflow/dist/style.css";
 import { useNodes } from "@/presentation/hooks/useNodes";

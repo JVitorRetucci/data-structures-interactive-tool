@@ -9,7 +9,7 @@ import { Canvas } from "../components/Canvas";
 import { DefaultEdge } from "@/presentation/components/DefaultEdge";
 import { ListNode } from "@/presentation/components/ListNode";
 import { ListManager } from "@/infra/positionManagers/ListManager";
-import { LinkedList } from "@/infra/dataStructures/LinkedList";
+import { LinkedList } from "@/domain/services/dataStructures/LinkedList";
 import { Node } from "@/domain/entities/Node";
 
 const positionManager = new ListManager({ padding: 60 });
