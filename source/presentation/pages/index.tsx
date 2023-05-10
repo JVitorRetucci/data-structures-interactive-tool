@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 import { ListNodeProps } from "@/presentation/components/ListNode";
 import React, { Fragment, useEffect, useState } from "react";
 import { Node } from "reactflow";
@@ -7,15 +8,16 @@ import generateValueBetween from "@/utils/generateValueBetween";
 import { Editor } from "@monaco-editor/react";
 import { DialogWrapper } from "@/presentation/components/DialogWrapper";
 import { Transition } from "@headlessui/react";
-import { objectContainsKey } from "jest-mock-extended";
+import { LocalStorageKeys } from "../enums/LocalStorageKeys";
 
 const initialNodes: Array<Node<ListNodeProps>> = [];
 
 export default function Home(): JSX.Element {
-  const [code, setCode] = useState<string>();
+  const [throttle, setThrottle] = useState(false);
+  const [code, setCode] = useState("[]");
   const [showEditor, setShowEditor] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isCodeValid, setIsCodeValid] = useState(false);
+  const [isCodeValid, setIsCodeValid] = useState(true);
   const { Canvas, addNodeAtStart, addNodeAtEnd, setNodesByJSON } = useNodes({ initialNodes });
 
   const buttonStart = (): void => {
@@ -28,7 +30,7 @@ export default function Home(): JSX.Element {
 
   const handleApplyNodes = (): void => {
     try {
-      const obj = JSON.parse(code as string);
+      const obj = JSON.parse(code);
       if(!obj.length) throw new Error("The value must be an array.")
       setNodesByJSON(obj);
     } catch (error) {
@@ -44,7 +46,24 @@ export default function Home(): JSX.Element {
 
   useEffect(() => {
     setIsCodeValid(isCodeValid && !!code);
-  }, [code])
+
+    if(throttle && isCodeValid){
+      window.localStorage.setItem(LocalStorageKeys.EDITOR_CONTENT, code);
+      setTimeout(() => {
+        setThrottle(false);
+      }, 200);
+    } else {
+      setThrottle(true);
+    }
+
+  }, [code]);
+
+  useEffect(() => {
+    const initialCode = window.localStorage.getItem(LocalStorageKeys.EDITOR_CONTENT);
+    if (!!initialCode) {
+      setCode(initialCode);
+    }
+  }, []);
 
   return (
     <main className="flex w-full bg-slate-700">
@@ -70,6 +89,8 @@ export default function Home(): JSX.Element {
             theme="vs-dark"
             onValidate={(validations) => setIsCodeValid(!validations.length)}
             onChange={(value: string) => setCode(value)}
+            value={code}
+            defaultValue="[]"
             className="shrink pt-4 bg-editor"
           />
           <div className="h-fit flex justify-center items-center p-4">
