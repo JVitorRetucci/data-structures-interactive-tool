@@ -38,14 +38,24 @@ export class LinkedList {
   }
 
   public addNodeAtStart(value: string): Array<Node<T>> {
+    const newId = generateRandomId();
+    
+    const newHead = new Node({
+      ...this.nodes[0],
+      value: {
+        value: "HEAD",
+        nextNodeId: newId
+      }
+    });
+
     const newNodes = [
-      this.nodes[0],
+      newHead,
       new Node<T>({
-        id: generateRandomId(),
+        id: newId,
         position: new Position(0, 0),
         value: {
           value: value,
-          nextNodeId: this.nodes.at(1)?.id ?? ''
+          nextNodeId: this.nodes.at(1)?.id ?? 'TAIL'
         },
         connectedNodesIds: [this.nodes.at(1)?.id as string],
       }),
