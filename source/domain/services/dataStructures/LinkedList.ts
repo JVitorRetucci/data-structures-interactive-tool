@@ -1,3 +1,4 @@
+import { ValidationError } from "@/core/Errors";
 import { Node } from "@/domain/entities/Node";
 import Position from "@/domain/entities/Position";
 import { LogicalManager } from "@/domain/services/LogicalManager";
@@ -21,15 +22,18 @@ export class LinkedList {
 
     this._logicalManager = new LogicalManager({
       positionManager,
-      initialNodes: [new Node<T>({
-        id: generateRandomId(),
-        position: new Position(0,0),
-        value: {
-          value: "HEAD",
-          nextNodeId: !initials[0] ? '' : initials[0].id,
-        },
-        connectedNodesIds: [],
-      }) , ...initials],
+      initialNodes: [
+        new Node<T>({
+          id: generateRandomId(),
+          position: new Position(0, 0),
+          value: {
+            value: "HEAD",
+            nextNodeId: !initials[0] ? "" : initials[0].id,
+          },
+          connectedNodesIds: [],
+        }),
+        ...initials,
+      ],
     });
   }
 
@@ -39,13 +43,13 @@ export class LinkedList {
 
   public addNodeAtStart(value: string): Array<Node<T>> {
     const newId = generateRandomId();
-    
+
     const newHead = new Node({
       ...this.nodes[0],
       value: {
         value: "HEAD",
-        nextNodeId: newId
-      }
+        nextNodeId: newId,
+      },
     });
 
     const newNodes = [
@@ -55,7 +59,7 @@ export class LinkedList {
         position: new Position(0, 0),
         value: {
           value: value,
-          nextNodeId: this.nodes.at(1)?.id ?? 'TAIL'
+          nextNodeId: this.nodes.at(1)?.id ?? "TAIL",
         },
         connectedNodesIds: [this.nodes.at(1)?.id as string],
       }),
@@ -69,7 +73,12 @@ export class LinkedList {
   public addNodeAtEnd(value: string): Array<Node<T>> {
     const newId = generateRandomId();
 
-    this.nodes.at(-1)?.updateValue({ value: this.nodes.at(-1)?.value.value as string, nextNodeId: newId });
+    this.nodes
+      .at(-1)
+      ?.updateValue({
+        value: this.nodes.at(-1)?.value.value as string,
+        nextNodeId: newId,
+      });
     this.nodes.at(-1)?.updateConnectedNodesIds([newId]);
 
     const newNodes = [
@@ -79,7 +88,7 @@ export class LinkedList {
         position: new Position(0, 0),
         value: {
           value: value,
-          nextNodeId: 'TAIL'
+          nextNodeId: "TAIL",
         },
         connectedNodesIds: [],
       }),
@@ -88,7 +97,35 @@ export class LinkedList {
     this.updateNodes(newNodes);
     return this.nodes;
   }
-  
+
+  public addNodeAtPosition(value: string, index: number): Array<Node<T>> {
+    if (!this.nodes[index])
+      throw new ValidationError([
+        { parameter: "index", error: "Invalid index" },
+      ]);
+
+    const newNode = new Node({
+      id: generateRandomId(),
+      position: new Position(0, 0),
+      value: {
+        value,
+        nextNodeId: this.nodes[index].id,
+      },
+      connectedNodesIds: [this.nodes[index].id],
+    });
+
+    const firstHalf = this.nodes.slice(0, index);
+    const lastHalf = this.nodes.slice(index);
+
+    firstHalf[firstHalf.length - 1].value.nextNodeId = newNode.id;
+    firstHalf[firstHalf.length - 1].connectedNodesIds = [newNode.id];
+
+    const newNodes = [...firstHalf, newNode, ...lastHalf];
+
+    this.updateNodes(newNodes);
+    return this.nodes;
+  }
+
   setNodesByJSON(nodes: Array<Node<T>>): void {
     const newNodes = nodes.map((node, index) => {
       const next = nodes.find((nxt) => node.connectedNodesIds.includes(nxt.id));
@@ -98,22 +135,27 @@ export class LinkedList {
         position: new Position(0, 0),
         value: {
           value: node.value.value,
-          nextNodeId: next?.id ?? index + 1 !== nodes.length ? nodes[index+1].id : 'TAIL'
+          nextNodeId:
+            next?.id ?? index + 1 !== nodes.length
+              ? nodes[index + 1].id
+              : "TAIL",
         },
         connectedNodesIds: !next?.id ? [] : [next?.id],
-      })
-      
-    })
+      });
+    });
 
-    this.updateNodes([new Node<T>({
-      id: generateRandomId(),
-      position: new Position(0,0),
-      value: {
-        value: "HEAD",
-        nextNodeId: newNodes[0].id,
-      },
-      connectedNodesIds: [],
-    }) , ...newNodes]);
+    this.updateNodes([
+      new Node<T>({
+        id: generateRandomId(),
+        position: new Position(0, 0),
+        value: {
+          value: "HEAD",
+          nextNodeId: newNodes[0].id,
+        },
+        connectedNodesIds: [],
+      }),
+      ...newNodes,
+    ]);
   }
 
   private updateNodes(nodes: Array<Node<T>>): void {

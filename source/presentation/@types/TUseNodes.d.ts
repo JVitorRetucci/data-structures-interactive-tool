@@ -1,3 +1,5 @@
+import { TEither } from "@/core/Either";
+import { TApplicationError } from "@/core/Errors";
 import { Node } from "@/domain/entities/Node";
 
 interface Edge {
@@ -16,7 +18,7 @@ export interface IUseNodesUtilities<T = undefined> {
 
   /* ===== METHODS ===== */
   addNodeAtStart: (value: string) => void;
-  addNodeAtPosition: (node: Node<T>) => void;
+  addNodeAtPosition: (value: string, index: number) => TEither<TApplicationError, void>;
   addNodeAtEnd: (value: string) => void;
   
   removeNodeAtStart: () => void;

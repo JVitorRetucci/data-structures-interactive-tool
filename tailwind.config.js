@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       colors: {
         'editor': '#1e1e1e',
+        'canvas': '#27272a',
         dracula: {
           green: '#0DFA83',
           pink: '#FF79C5',
@@ -24,5 +25,5 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 };

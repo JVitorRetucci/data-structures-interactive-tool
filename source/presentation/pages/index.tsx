@@ -1,7 +1,5 @@
 /* eslint-disable no-extra-boolean-cast */
-import { ListNodeProps } from "@/presentation/components/ListNode";
 import React, { useEffect, useState } from "react";
-import { Node } from "reactflow";
 import "reactflow/dist/style.css";
 import { useNodes } from "@/presentation/hooks/useNodes";
 import generateValueBetween from "@/utils/generateValueBetween";
@@ -9,19 +7,26 @@ import { Editor } from "@monaco-editor/react";
 import { DialogWrapper } from "@/presentation/components/DialogWrapper";
 import { Transition } from "@headlessui/react";
 import { LocalStorageKeys } from "../enums/LocalStorageKeys";
-
-const initialNodes: Array<Node<ListNodeProps>> = [];
+import { ValidationError } from "@/core/Errors";
+import { ErrorDialog } from "@/presentation/components/ErrorDialog";
 
 export default function Home(): JSX.Element {
   const [throttle, setThrottle] = useState(false);
   const [code, setCode] = useState("[]");
+  const [activeNodeIndex, setActiveNodeIndex] = useState<number>(0);
   const [showEditor, setShowEditor] = useState(false);
+  const [errorModal, setErrorModal] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isCodeValid, setIsCodeValid] = useState(true);
-  const { Canvas, addNodeAtStart, addNodeAtEnd, setNodesByJSON } = useNodes({ initialNodes });
+  const { Canvas, addNodeAtStart, addNodeAtPosition, addNodeAtEnd, setNodesByJSON, nodes, emphasisNodeByPosition } = useNodes({ initialNodes: [] });
 
   const buttonStart = (): void => {
     addNodeAtStart(generateValueBetween(1, 10).toString());
+  };
+
+  const buttonAtPosition = (): void => {
+    const result = addNodeAtPosition(generateValueBetween(1, 10).toString(), 2);
+    if (result.isLeft()) setErrorModal((result.value as ValidationError).errors[0].error);
   };
 
   const buttonEnd = (): void => {
@@ -34,7 +39,8 @@ export default function Home(): JSX.Element {
       if(!obj.length) throw new Error("The value must be an array.")
       setNodesByJSON(obj);
     } catch (error) {
-      console.log(error)
+      const err = error as Error
+      setErrorModal(err.message)
     }
     setIsOpen(false);
   };
@@ -99,6 +105,15 @@ export default function Home(): JSX.Element {
             </button>
           </div>
         </Transition>
+        <div className="h-full w-full bg-white relative">
+          <button
+            className="min-w-[7.5rem] bg-gradient-to-b from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-800 text-white absolute top-10 left-0 z-10 p-4 rounded-r-md"
+            onClick={() => setShowEditor(!showEditor)}
+          >
+            {showEditor ? "Hide" : "Input JSON"}
+          </button>
+          <React.StrictMode>{Canvas}</React.StrictMode>
+        </div>
         <div className="bg-gradient-to-b from-slate-700 to-slate-800 px-6 py-4 fixed z-10 bottom-8 min-w-[22.5rem] grid gap-4 grid-flow-col justify-around rounded-md drop-shadow-md">
           <button
             className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white w-fit active:brightness-50"
@@ -108,19 +123,22 @@ export default function Home(): JSX.Element {
           </button>
           <button
             className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white w-fit"
+            onClick={buttonAtPosition}
+          >
+            Adicionar na posição
+          </button>
+          <button
+            className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white w-fit"
             onClick={buttonEnd}
           >
             Adicionar no fim
           </button>
-        </div>
-        <div className="h-full w-full bg-white relative">
-          <button
-            className="min-w-[7.5rem] bg-gradient-to-b from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-800 text-white absolute top-10 left-0 z-10 p-4 rounded-r-md"
-            onClick={() => setShowEditor(!showEditor)}
+          <div
+            className="overflow-hidden rounded text-white w-fit"
           >
-            {showEditor ? "Hide" : "Input JSON"}
-          </button>
-          <React.StrictMode>{Canvas}</React.StrictMode>
+            <input className="h-full bg-canvas px-4 w-16 outline-none border-0" min={0} max={nodes.length - 1} type="number" value={activeNodeIndex} onChange={(evt) => setActiveNodeIndex(Number(evt.target.value))} />
+            <button className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2" onClick={() => emphasisNodeByPosition(activeNodeIndex)}>Activate</button>
+          </div>
         </div>
       </div>
       <DialogWrapper isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -145,6 +163,7 @@ export default function Home(): JSX.Element {
           </button>
         </div>
       </DialogWrapper>
+      <ErrorDialog message={errorModal} isOpen={!!errorModal} close={() => setErrorModal("")} />
     </main>
   );
 }
