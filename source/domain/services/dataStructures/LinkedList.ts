@@ -127,6 +127,26 @@ export class LinkedList {
     return this.nodes;
   }
 
+  public removeNodeAtPosition(index: number): Array<Node<T>> {
+    if (!this.nodes[index])
+      throw new ValidationError([
+        { parameter: "index", error: "Invalid index" },
+      ]);
+
+    const removedNode = this.nodes[index];
+
+    const firstHalf = this.nodes.slice(0, index - 1);
+    const lastHalf = this.nodes.slice(index);
+
+    firstHalf[firstHalf.length - 2].value.nextNodeId = removedNode.id;
+    firstHalf[firstHalf.length - 2].connectedNodesIds = [removedNode.id];
+
+    const newNodes = [...firstHalf, ...lastHalf];
+
+    this.updateNodes(newNodes);
+    return this.nodes;
+  }
+
   public addNodeAtPosition(value: string, index: number): Array<Node<T>> {
     if (!this.nodes[index])
       throw new ValidationError([
