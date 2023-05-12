@@ -4,7 +4,14 @@ import {
   TUseNodes,
 } from "@/presentation/@types/TUseNodes";
 import { useCallback, useMemo } from "react";
-import { addEdge, MarkerType, useEdgesState, useNodesState, useReactFlow } from "reactflow";
+import {
+  addEdge,
+  Edge,
+  MarkerType,
+  useEdgesState,
+  useNodesState,
+  useReactFlow,
+} from "reactflow";
 import { Canvas } from "../components/Canvas";
 import { DefaultEdge } from "@/presentation/components/DefaultEdge";
 import { ListNode } from "@/presentation/components/ListNode";
@@ -80,34 +87,16 @@ export const useNodes: TUseNodes = ({
       setNodes(() => {
         linkedList.addNodeAtEnd(newNodeParams);
 
-        const updatedEdges = linkedList.nodes.reduce((acc, current, index) => {
-          if (!linkedList.nodes[index + 1]) return acc;
-          const nextId = linkedList.nodes[index + 1].id ?? undefined;
-
-          const edge = {
-            id: `e${current.id}-${nextId}`,
-            source: current.id,
-            target: nextId,
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: "#ff0070",
-            },
-            style: {
-              strokeWidth: 2,
-              stroke: "#FF0072",
-            },
-          };
-
-          return [...acc, edge];
-        }, []);
-
-        setEdges(updatedEdges);
+        setEdges(updateEdges());
 
         return linkedList.nodes.map((item, index) => ({
           id: item.id,
           position: item.position,
           draggable: true,
-          data: { ...item.value, isActive: index === linkedList.nodes.length - 1 },
+          data: {
+            ...item.value,
+            isActive: index === linkedList.nodes.length - 1,
+          },
           type: "listNode",
         }));
       });
@@ -121,31 +110,7 @@ export const useNodes: TUseNodes = ({
         linkedList.addNodeAtPosition(value, index);
 
         setNodes(() => {
-          const updatedEdges = linkedList.nodes.reduce(
-            (acc, current, index) => {
-              if (!linkedList.nodes[index + 1]) return acc;
-              const nextId = linkedList.nodes[index + 1].id ?? undefined;
-
-              const edge = {
-                id: `e${current.id}-${nextId}`,
-                source: current.id,
-                target: nextId,
-                markerEnd: {
-                  type: MarkerType.ArrowClosed,
-                  color: "#ff0070",
-                },
-                style: {
-                  strokeWidth: 2,
-                  stroke: "#FF0072",
-                },
-              };
-
-              return [...acc, edge];
-            },
-            []
-          );
-
-          setEdges(updatedEdges);
+          setEdges(updateEdges());
 
           return linkedList.nodes.map((item, idx) => ({
             id: item.id,
@@ -169,29 +134,8 @@ export const useNodes: TUseNodes = ({
       setNodes(() => {
         linkedList.addNodeAtStart(newNodeParams);
 
-        const updatedEdges = linkedList.nodes.reduce((acc, current, index) => {
-          if (!linkedList.nodes[index + 1]) return acc;
-          const nextId = linkedList.nodes[index + 1].id ?? undefined;
+        setEdges(updateEdges());
 
-          const edge = {
-            id: `e${current.id}-${nextId}`,
-            source: current.id,
-            target: nextId,
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: "#ff0070",
-            },
-            style: {
-              strokeWidth: 2,
-              stroke: "#FF0072",
-            },
-          };
-
-          return [...acc, edge];
-        }, []);
-
-        setEdges(updatedEdges);
-        
         return linkedList.nodes.map((item, index) => ({
           id: item.id,
           position: item.position,
@@ -204,17 +148,61 @@ export const useNodes: TUseNodes = ({
     [setNodes, edges]
   );
 
-  const removeNodeAtStart = (): void => {
-    throw new Error("Not implemented yet");
-  };
+  const removeNodeAtStart = useCallback((): void => {
+    setNodes(() => {
+      linkedList.removeNodeAtStart();
 
-  const removeNodeAtPosition = (): void => {
-    throw new Error("Not implemented yet");
-  };
+      setEdges(updateEdges());
 
-  const removeNodeAtEnd = (): void => {
-    throw new Error("Not implemented yet");
-  };
+      return linkedList.nodes.map((item) => ({
+        id: item.id,
+        position: item.position,
+        draggable: true,
+        data: item.value,
+        type: "listNode",
+      }));
+    });
+  }, [setNodes, nodes, edges]);
+
+  const removeNodeAtPosition = useCallback(
+    (index: number): TEither<TApplicationError, void> => {
+      try {
+        setNodes(() => {
+          linkedList.removeNodeAtPosition(index);
+
+          setEdges(updateEdges());
+
+          return linkedList.nodes.map((item) => ({
+            id: item.id,
+            position: item.position,
+            draggable: true,
+            data: item.value,
+            type: "listNode",
+          }));
+        });
+        return right(undefined);
+      } catch (error) {
+        return left(error);
+      }
+    },
+    [setNodes, nodes, edges]
+  );
+
+  const removeNodeAtEnd = useCallback((): void => {
+    setNodes(() => {
+      linkedList.removeNodeAtEnd();
+
+      setEdges(updateEdges());
+
+      return linkedList.nodes.map((item) => ({
+        id: item.id,
+        position: item.position,
+        draggable: true,
+        data: item.value,
+        type: "listNode",
+      }));
+    });
+  }, [setNodes, nodes, edges]);
 
   const getNodeAt = (): void => {
     throw new Error("Not implemented yet");
@@ -243,13 +231,15 @@ export const useNodes: TUseNodes = ({
   const emphasisNodeByPosition = useCallback(
     (index: number): void => {
       setNodes((list) => {
-        return [...list.map((node, idx) => ({
-          id: node.id,
-          position: node.position,
-          draggable: true,
-          data: { ...node.data, isActive: index === idx },
-          type: "listNode",
-        }))]
+        return [
+          ...list.map((node, idx) => ({
+            id: node.id,
+            position: node.position,
+            draggable: true,
+            data: { ...node.data, isActive: index === idx },
+            type: "listNode",
+          })),
+        ];
       });
     },
     [setNodes, nodes]
@@ -271,12 +261,35 @@ export const useNodes: TUseNodes = ({
     throw new Error("Not implemented yet");
   };
 
-  const emphasisEdgeById = () => {
+  const emphasisEdgeById = (): void => {
     throw new Error("Not implemented yet");
   };
 
   const emphasisEdgeByNodeId = (): void => {
     throw new Error("Not implemented yet");
+  };
+
+  const updateEdges = (): Edge[] => {
+    return linkedList.nodes.reduce((acc, current, index) => {
+      if (!linkedList.nodes[index + 1]) return acc;
+      const nextId = linkedList.nodes[index + 1].id ?? undefined;
+
+      const edge = {
+        id: `e${current.id}-${nextId}`,
+        source: current.id,
+        target: nextId,
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: "#ff0070",
+        },
+        style: {
+          strokeWidth: 2,
+          stroke: "#FF0072",
+        },
+      };
+
+      return [...acc, edge];
+    }, []);
   };
 
   return {
