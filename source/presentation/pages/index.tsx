@@ -18,7 +18,15 @@ export default function Home(): JSX.Element {
   const [errorModal, setErrorModal] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isCodeValid, setIsCodeValid] = useState(true);
-  const { Canvas, addNodeAtStart, addNodeAtPosition, addNodeAtEnd, setNodesByJSON, nodes, emphasisNodeByPosition } = useNodes({ initialNodes: [] });
+  const {
+    Canvas,
+    addNodeAtStart,
+    addNodeAtPosition,
+    addNodeAtEnd,
+    setNodesByJSON,
+    nodes,
+    emphasisNodeByPosition,
+  } = useNodes({ initialNodes: [] });
 
   const buttonStart = (): void => {
     addNodeAtStart(generateValueBetween(1, 10).toString());
@@ -26,7 +34,8 @@ export default function Home(): JSX.Element {
 
   const buttonAtPosition = (): void => {
     const result = addNodeAtPosition(generateValueBetween(1, 10).toString(), 2);
-    if (result.isLeft()) setErrorModal((result.value as ValidationError).errors[0].error);
+    if (result.isLeft())
+      setErrorModal((result.value as ValidationError).errors[0].error);
   };
 
   const buttonEnd = (): void => {
@@ -36,11 +45,11 @@ export default function Home(): JSX.Element {
   const handleApplyNodes = (): void => {
     try {
       const obj = JSON.parse(code);
-      if(!obj.length) throw new Error("The value must be an array.")
+      if (!obj.length) throw new Error("The value must be an array.");
       setNodesByJSON(obj);
     } catch (error) {
-      const err = error as Error
-      setErrorModal(err.message)
+      const err = error as Error;
+      setErrorModal(err.message);
     }
     setIsOpen(false);
   };
@@ -53,7 +62,7 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     setIsCodeValid(isCodeValid && !!code);
 
-    if(throttle && isCodeValid){
+    if (throttle && isCodeValid) {
       window.localStorage.setItem(LocalStorageKeys.EDITOR_CONTENT, code);
       setTimeout(() => {
         setThrottle(false);
@@ -61,11 +70,12 @@ export default function Home(): JSX.Element {
     } else {
       setThrottle(true);
     }
-
   }, [code]);
 
   useEffect(() => {
-    const initialCode = window.localStorage.getItem(LocalStorageKeys.EDITOR_CONTENT);
+    const initialCode = window.localStorage.getItem(
+      LocalStorageKeys.EDITOR_CONTENT
+    );
     if (!!initialCode) {
       setCode(initialCode);
     }
@@ -100,7 +110,10 @@ export default function Home(): JSX.Element {
             className="shrink pt-4 bg-editor"
           />
           <div className="h-fit flex justify-center items-center p-4">
-            <button className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white w-full active:brightness-50" onClick={checkCodeValidation}>
+            <button
+              className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white w-full active:brightness-50"
+              onClick={checkCodeValidation}
+            >
               Enter
             </button>
           </div>
@@ -133,11 +146,21 @@ export default function Home(): JSX.Element {
           >
             Adicionar no fim
           </button>
-          <div
-            className="overflow-hidden rounded text-white w-fit"
-          >
-            <input className="h-full bg-canvas px-4 w-16 outline-none border-0" min={0} max={nodes.length - 1} type="number" value={activeNodeIndex} onChange={(evt) => setActiveNodeIndex(Number(evt.target.value))} />
-            <button className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2" onClick={() => emphasisNodeByPosition(activeNodeIndex)}>Activate</button>
+          <div className="overflow-hidden rounded text-white w-fit">
+            <input
+              className="h-full bg-canvas px-4 w-16 outline-none border-0"
+              min={0}
+              max={nodes.length - 1}
+              type="number"
+              value={activeNodeIndex}
+              onChange={(evt) => setActiveNodeIndex(Number(evt.target.value))}
+            />
+            <button
+              className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2"
+              onClick={() => emphasisNodeByPosition(activeNodeIndex)}
+            >
+              Activate
+            </button>
           </div>
         </div>
       </div>
@@ -163,7 +186,11 @@ export default function Home(): JSX.Element {
           </button>
         </div>
       </DialogWrapper>
-      <ErrorDialog message={errorModal} isOpen={!!errorModal} close={() => setErrorModal("")} />
+      <ErrorDialog
+        message={errorModal}
+        isOpen={!!errorModal}
+        close={() => setErrorModal("")}
+      />
     </main>
   );
 }

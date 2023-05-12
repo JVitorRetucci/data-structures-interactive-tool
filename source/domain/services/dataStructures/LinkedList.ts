@@ -41,6 +41,21 @@ export class LinkedList {
     return this._logicalManager.nodes as Array<Node<T>>;
   }
 
+  public removeNodeAtStart(): Array<Node<T>> {
+    const newNodes = this.nodes.slice(2);
+    const updatedHead = new Node<T>({
+      ...this.nodes[0],
+      value: {
+        value: "HEAD",
+        nextNodeId: newNodes[0].id,
+      },
+      connectedNodesIds: [newNodes[0].id],
+    });
+
+    this.updateNodes([updatedHead, ...newNodes]);
+    return this.nodes;
+  }
+
   public addNodeAtStart(value: string): Array<Node<T>> {
     const newId = generateRandomId();
 
@@ -73,12 +88,10 @@ export class LinkedList {
   public addNodeAtEnd(value: string): Array<Node<T>> {
     const newId = generateRandomId();
 
-    this.nodes
-      .at(-1)
-      ?.updateValue({
-        value: this.nodes.at(-1)?.value.value as string,
-        nextNodeId: newId,
-      });
+    this.nodes.at(-1)?.updateValue({
+      value: this.nodes.at(-1)?.value.value as string,
+      nextNodeId: newId,
+    });
     this.nodes.at(-1)?.updateConnectedNodesIds([newId]);
 
     const newNodes = [
