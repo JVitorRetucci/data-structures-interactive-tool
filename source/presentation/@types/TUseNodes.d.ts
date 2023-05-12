@@ -22,7 +22,7 @@ export interface IUseNodesUtilities<T = undefined> {
   addNodeAtEnd: (value: string) => void;
   
   removeNodeAtStart: () => void;
-  removeNodeAtPosition: (index: number) => void;
+  removeNodeAtPosition: (index: number) => TEither<TApplicationError, void>;
   removeNodeAtEnd: () => void;
   
   getNodeAt: (index: number) => Node<T>;

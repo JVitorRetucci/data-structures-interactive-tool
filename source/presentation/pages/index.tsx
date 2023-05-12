@@ -23,6 +23,9 @@ export default function Home(): JSX.Element {
     addNodeAtStart,
     addNodeAtPosition,
     addNodeAtEnd,
+    removeNodeAtStart,
+    removeNodeAtPosition,
+    removeNodeAtEnd,
     setNodesByJSON,
     nodes,
     emphasisNodeByPosition,
@@ -40,6 +43,22 @@ export default function Home(): JSX.Element {
 
   const buttonEnd = (): void => {
     addNodeAtEnd(generateValueBetween(1, 10).toString());
+  };
+
+  const buttonRemoveAtStart = (): void => {
+    removeNodeAtStart();
+  };
+
+  const buttonRemoveAtPosition = (): void => {
+    const result = removeNodeAtPosition(activeNodeIndex);
+    if (result.isLeft()) {
+      const err = !!(result.value as ValidationError).errors ? (result.value as ValidationError).errors[0].error : result.value.message;
+      setErrorModal(err);
+    }
+  };
+
+  const buttonRemoveAtEnd = (): void => {
+    removeNodeAtEnd();
   };
 
   const handleApplyNodes = (): void => {
@@ -127,26 +146,26 @@ export default function Home(): JSX.Element {
           </button>
           <React.StrictMode>{Canvas}</React.StrictMode>
         </div>
-        <div className="bg-gradient-to-b from-slate-700 to-slate-800 px-6 py-4 fixed z-10 bottom-8 min-w-[22.5rem] grid gap-4 grid-flow-col justify-around rounded-md drop-shadow-md">
+        <div className="bg-gradient-to-b from-slate-700 to-slate-800 px-6 py-4 fixed z-10 bottom-8 min-w-[22.5rem] grid gap-4 grid-cols-4 justify-around rounded-md drop-shadow-md">
           <button
-            className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white w-fit active:brightness-50"
+            className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white active:brightness-50"
             onClick={buttonStart}
           >
             Adicionar no início
           </button>
           <button
-            className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white w-fit"
+            className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white"
             onClick={buttonAtPosition}
           >
             Adicionar na posição
           </button>
           <button
-            className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white w-fit"
+            className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white"
             onClick={buttonEnd}
           >
             Adicionar no fim
           </button>
-          <div className="overflow-hidden rounded text-white w-fit">
+          <div className="w-full flex overflow-hidden rounded text-white">
             <input
               className="h-full bg-canvas px-4 w-16 outline-none border-0"
               min={0}
@@ -156,12 +175,30 @@ export default function Home(): JSX.Element {
               onChange={(evt) => setActiveNodeIndex(Number(evt.target.value))}
             />
             <button
-              className="bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2"
+              className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2"
               onClick={() => emphasisNodeByPosition(activeNodeIndex)}
             >
               Activate
             </button>
           </div>
+          <button
+            className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white active:brightness-50"
+            onClick={buttonRemoveAtStart}
+          >
+            Remover do início
+          </button>
+          <button
+            className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white"
+            onClick={buttonRemoveAtPosition}
+          >
+            Remover da posição
+          </button>
+          <button
+            className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white"
+            onClick={buttonRemoveAtEnd}
+          >
+            Remover do fim
+          </button>
         </div>
       </div>
       <DialogWrapper isOpen={isOpen} setIsOpen={setIsOpen}>

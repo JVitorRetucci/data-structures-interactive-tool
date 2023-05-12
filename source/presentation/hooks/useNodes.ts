@@ -10,7 +10,6 @@ import {
   MarkerType,
   useEdgesState,
   useNodesState,
-  useReactFlow,
 } from "reactflow";
 import { Canvas } from "../components/Canvas";
 import { DefaultEdge } from "@/presentation/components/DefaultEdge";
@@ -167,8 +166,8 @@ export const useNodes: TUseNodes = ({
   const removeNodeAtPosition = useCallback(
     (index: number): TEither<TApplicationError, void> => {
       try {
+        linkedList.removeNodeAtPosition(index);
         setNodes(() => {
-          linkedList.removeNodeAtPosition(index);
 
           setEdges(updateEdges());
 

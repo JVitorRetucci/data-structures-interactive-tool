@@ -47,9 +47,9 @@ export class LinkedList {
       ...this.nodes[0],
       value: {
         value: "HEAD",
-        nextNodeId: newNodes[0].id,
+        nextNodeId: !newNodes[0] ? "TAIL" : newNodes[0].id,
       },
-      connectedNodesIds: [newNodes[0].id],
+      connectedNodesIds: [!newNodes[0] ? "TAIL" : newNodes[0].id],
     });
 
     this.updateNodes([updatedHead, ...newNodes]);
@@ -86,6 +86,19 @@ export class LinkedList {
   }
 
   public removeNodeAtEnd(): Array<Node<T>> {
+    if(this.nodes.length < 2) {
+      const head = this.nodes[0];
+      this.updateNodes([ new Node<T>({
+        ...head,
+        value: {
+          ...head.value,
+          nextNodeId: "TAIL",
+        },
+        connectedNodesIds: [],
+      })]);
+      return this.nodes;
+    }
+
     const newNodes = this.nodes.slice(0, -2);
     const oldTail = this.nodes[this.nodes.length - 2];
     const newTail = new Node<T>({
@@ -135,11 +148,12 @@ export class LinkedList {
 
     const removedNode = this.nodes[index];
 
-    const firstHalf = this.nodes.slice(0, index - 1);
-    const lastHalf = this.nodes.slice(index);
+    const firstHalf = this.nodes.slice(0, index);
+    const lastHalf = this.nodes.slice(index + 1);
 
-    firstHalf[firstHalf.length - 2].value.nextNodeId = removedNode.id;
-    firstHalf[firstHalf.length - 2].connectedNodesIds = [removedNode.id];
+    console.log(firstHalf[firstHalf.length - 1])
+    firstHalf[firstHalf.length - 1].value.nextNodeId = removedNode.value.nextNodeId;
+    firstHalf[firstHalf.length - 1].connectedNodesIds = [removedNode.value.nextNodeId];
 
     const newNodes = [...firstHalf, ...lastHalf];
 
