@@ -85,6 +85,22 @@ export class LinkedList {
     return this.nodes;
   }
 
+  public removeNodeAtEnd(): Array<Node<T>> {
+    const newNodes = this.nodes.slice(0, -2);
+    const oldTail = this.nodes[this.nodes.length - 2];
+    const newTail = new Node<T>({
+      ...oldTail,
+      value: {
+        ...oldTail.value,
+        nextNodeId: "TAIL",
+      },
+      connectedNodesIds: [],
+    });
+
+    this.updateNodes([...newNodes, newTail]);
+    return this.nodes;
+  }
+
   public addNodeAtEnd(value: string): Array<Node<T>> {
     const newId = generateRandomId();
 
