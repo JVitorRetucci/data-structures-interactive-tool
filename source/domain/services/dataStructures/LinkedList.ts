@@ -151,7 +151,8 @@ export class LinkedList {
     const firstHalf = this.nodes.slice(0, index);
     const lastHalf = this.nodes.slice(index + 1);
 
-    console.log(firstHalf[firstHalf.length - 1])
+    console.log({nodes: this.nodes, firstHalf, lastHalf})
+
     firstHalf[firstHalf.length - 1].value.nextNodeId = removedNode.value.nextNodeId;
     firstHalf[firstHalf.length - 1].connectedNodesIds = [removedNode.value.nextNodeId];
 
@@ -172,13 +173,13 @@ export class LinkedList {
       position: new Position(0, 0),
       value: {
         value,
-        nextNodeId: this.nodes[index].id,
+        nextNodeId: this.nodes[index].value.nextNodeId,
       },
-      connectedNodesIds: [this.nodes[index].id],
+      connectedNodesIds: [this.nodes[index].value.nextNodeId],
     });
 
-    const firstHalf = this.nodes.slice(0, index);
-    const lastHalf = this.nodes.slice(index);
+    const firstHalf = this.nodes.slice(0, index + 1);
+    const lastHalf = this.nodes.slice(index + 1);
 
     firstHalf[firstHalf.length - 1].value.nextNodeId = newNode.id;
     firstHalf[firstHalf.length - 1].connectedNodesIds = [newNode.id];

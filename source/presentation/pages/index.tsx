@@ -9,11 +9,13 @@ import { Transition } from "@headlessui/react";
 import { LocalStorageKeys } from "../enums/LocalStorageKeys";
 import { ValidationError } from "@/core/Errors";
 import { ErrorDialog } from "@/presentation/components/ErrorDialog";
+import generateRandomId from "@/utils/generateRandomId";
 
 export default function Home(): JSX.Element {
   const [throttle, setThrottle] = useState(false);
   const [code, setCode] = useState("[]");
-  const [activeNodeIndex, setActiveNodeIndex] = useState<number>(0);
+  const [targetIndex, setTargetIndex] = useState<string>("");
+  const [newValue, setNewValue] = useState<string>("");
   const [showEditor, setShowEditor] = useState(false);
   const [errorModal, setErrorModal] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -32,17 +34,21 @@ export default function Home(): JSX.Element {
   } = useNodes({ initialNodes: [] });
 
   const buttonStart = (): void => {
-    addNodeAtStart(generateValueBetween(1, 10).toString());
+    addNodeAtStart(newValue);
   };
 
   const buttonAtPosition = (): void => {
-    const result = addNodeAtPosition(generateValueBetween(1, 10).toString(), 2);
-    if (result.isLeft())
-      setErrorModal((result.value as ValidationError).errors[0].error);
+    const result = addNodeAtPosition(newValue, Number(targetIndex));
+    if (result.isLeft()){
+      const err = !!(result.value as ValidationError).errors
+        ? (result.value as ValidationError).errors[0].error
+        : result.value.message;
+      setErrorModal(err);
+    }
   };
 
   const buttonEnd = (): void => {
-    addNodeAtEnd(generateValueBetween(1, 10).toString());
+    addNodeAtEnd(newValue);
   };
 
   const buttonRemoveAtStart = (): void => {
@@ -50,9 +56,11 @@ export default function Home(): JSX.Element {
   };
 
   const buttonRemoveAtPosition = (): void => {
-    const result = removeNodeAtPosition(activeNodeIndex);
+    const result = removeNodeAtPosition(Number(targetIndex));
     if (result.isLeft()) {
-      const err = !!(result.value as ValidationError).errors ? (result.value as ValidationError).errors[0].error : result.value.message;
+      const err = !!(result.value as ValidationError).errors
+        ? (result.value as ValidationError).errors[0].error
+        : result.value.message;
       setErrorModal(err);
     }
   };
@@ -77,6 +85,11 @@ export default function Home(): JSX.Element {
     if (!isCodeValid) return;
     setIsOpen(true);
   };
+
+  useEffect(() => {
+    setTargetIndex("");
+    setNewValue(generateValueBetween(0, 10).toString());
+  }, [nodes]);
 
   useEffect(() => {
     setIsCodeValid(isCodeValid && !!code);
@@ -146,58 +159,70 @@ export default function Home(): JSX.Element {
           </button>
           <React.StrictMode>{Canvas}</React.StrictMode>
         </div>
-        <div className="bg-gradient-to-b from-slate-700 to-slate-800 px-6 py-4 fixed z-10 bottom-8 min-w-[22.5rem] grid gap-4 grid-cols-4 justify-around rounded-md drop-shadow-md">
+        <div className="bg-gradient-to-b from-slate-700 to-slate-800 px-6 py-4 fixed z-10 bottom-8 min-w-[22.5rem] grid gap-4 grid-cols-3 justify-around rounded-md drop-shadow-md">
+          <div className="absolute h-fit items-center justify-center p-2 w-fit max-w-[80%] bg-slate-500 -translate-y-full left-1/2 -translate-x-1/2 rounded-t flex w-full space-x-2">
+            <div className="w-full flex rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-dracula-purple items-center">
+              <label className="text-white bg-slate-800 p-2" htmlFor="value">
+                Value
+              </label>
+              <input
+                id="value"
+                type="number"
+                className="text-white w-full outline-none bg-slate-600 ring-0 border-none focus:ring-0"
+                value={newValue}
+                onChange={({ target: { value } }) => setNewValue(value)}
+              />
+            </div>
+            <div className="w-full flex rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-dracula-purple items-center">
+              <label className="text-white bg-slate-800 p-2" htmlFor="index">
+                Index
+              </label>
+              <input
+                id="index"
+                type="number"
+                className="text-white w-full outline-none bg-slate-600 ring-0 border-none focus:ring-0"
+                max={nodes.length - 1}
+                min={0}
+                value={targetIndex}
+                onChange={({ target: { value } }) => setTargetIndex(value)}
+              />
+            </div>
+          </div>
           <button
             className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white active:brightness-50"
             onClick={buttonStart}
           >
-            Adicionar no início
+            Add at start
           </button>
           <button
             className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white"
             onClick={buttonAtPosition}
           >
-            Adicionar na posição
+            Add at position
           </button>
           <button
             className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white"
             onClick={buttonEnd}
           >
-            Adicionar no fim
+            Add at end
           </button>
-          <div className="w-full flex overflow-hidden rounded text-white">
-            <input
-              className="h-full bg-canvas px-4 w-16 outline-none border-0"
-              min={0}
-              max={nodes.length - 1}
-              type="number"
-              value={activeNodeIndex}
-              onChange={(evt) => setActiveNodeIndex(Number(evt.target.value))}
-            />
-            <button
-              className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2"
-              onClick={() => emphasisNodeByPosition(activeNodeIndex)}
-            >
-              Activate
-            </button>
-          </div>
           <button
             className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white active:brightness-50"
             onClick={buttonRemoveAtStart}
           >
-            Remover do início
+            Remove at start
           </button>
           <button
             className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white"
             onClick={buttonRemoveAtPosition}
           >
-            Remover da posição
+            Remove at position
           </button>
           <button
             className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white"
             onClick={buttonRemoveAtEnd}
           >
-            Remover do fim
+            Remove at end
           </button>
         </div>
       </div>

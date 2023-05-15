@@ -55,11 +55,11 @@ export const useNodes: TUseNodes = ({
           target: nextId,
           markerEnd: {
             type: MarkerType.ArrowClosed,
-            color: "#ff0070",
+            color: "#FF555A",
           },
           style: {
             strokeWidth: 2,
-            stroke: "#FF0072",
+            stroke: "#FF555A",
           },
         };
 
@@ -115,7 +115,7 @@ export const useNodes: TUseNodes = ({
             id: item.id,
             position: item.position,
             draggable: true,
-            data: { ...item.value, isActive: index === idx },
+            data: { ...item.value, isActive: index + 1 === idx },
             type: "listNode",
           }));
         });
@@ -279,11 +279,11 @@ export const useNodes: TUseNodes = ({
         target: nextId,
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "#ff0070",
+          color: "#FF555A",
         },
         style: {
           strokeWidth: 2,
-          stroke: "#FF0072",
+          stroke: "#FF555A",
         },
       };
 
