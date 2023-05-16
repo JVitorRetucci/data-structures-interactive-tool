@@ -166,26 +166,24 @@ export default function Home(): JSX.Element {
           </div>
           <div className="bg-gradient-to-b from-slate-700 to-slate-800 px-6 py-4 fixed z-10 bottom-8 min-w-[22.5rem] grid gap-4 grid-cols-3 justify-around rounded-md drop-shadow-md">
             <div className="absolute h-fit items-center justify-center p-2 max-w-[80%] bg-slate-500 -translate-y-full left-1/2 -translate-x-1/2 rounded-t flex w-full space-x-2">
-              <div className="w-full flex rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-dracula-purple items-center">
-                <label className="text-white bg-slate-800 p-2" htmlFor="value">
+              <div className="labelled-input">
+                <label htmlFor="value">
                   Value
                 </label>
                 <input
                   id="value"
                   type="number"
-                  className="text-white w-full outline-none bg-slate-600 ring-0 border-none focus:ring-0"
                   value={newValue}
                   onChange={({ target: { value } }) => setNewValue(value)}
                 />
               </div>
-              <div className="w-full flex rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-dracula-purple items-center">
-                <label className="text-white bg-slate-800 p-2" htmlFor="index">
+              <div className="labelled-input">
+                <label htmlFor="index">
                   Index
                 </label>
                 <input
                   id="index"
                   type="number"
-                  className="text-white w-full outline-none bg-slate-600 ring-0 border-none focus:ring-0"
                   max={nodes.length - 1}
                   min={0}
                   value={targetIndex}

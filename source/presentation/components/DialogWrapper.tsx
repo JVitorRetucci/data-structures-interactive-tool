@@ -9,7 +9,7 @@ interface IDialogProps {
   cancelLabel?: string;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  apply: () => void;
+  apply?: () => void;
 }
 
 export const DialogWrapper: FC<IDialogProps> = ({
@@ -20,7 +20,7 @@ export const DialogWrapper: FC<IDialogProps> = ({
   isOpen,
   children,
   setIsOpen,
-  apply,
+  apply = () => {},
 }): JSX.Element => {
   return (
     <Dialog
