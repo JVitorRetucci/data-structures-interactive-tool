@@ -1,5 +1,5 @@
 {
-  "name": "data structures interactive tool",
+  "name": "data-structures-interactive-tool",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
     "lint": "eslint source --fix",
     "prepare": "husky install",
     "release": "standard-version",
-    "cypress:open": "cypresse open",
+    "cypress:open": "cypress open",
     "dev": "env-cmd next dev",
     "build": "env-cmd --no-override next build $npm_package_config_nextpath && next export $npm_package_config_nextpath -o dist",
     "start": "env-cmd next start $npm_package_config_nextpath"

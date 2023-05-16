@@ -34,7 +34,7 @@ export const Canvas = ({
       }}
     >
       <Background
-        className="bg-zinc-800"
+        className="bg-editor"
         color="#ffffff22"
         variant={BackgroundVariant.Lines}
       />
