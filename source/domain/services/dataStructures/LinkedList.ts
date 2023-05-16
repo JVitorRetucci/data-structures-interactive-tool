@@ -5,7 +5,7 @@ import { LogicalManager } from "@/domain/services/LogicalManager";
 import { PositionManager } from "@/domain/services/PositionManager";
 import generateRandomId from "@/utils/generateRandomId";
 
-interface T {
+export interface ILinkedListValue {
   value: string;
   nextNodeId: string;
 }
@@ -17,13 +17,13 @@ export interface LinkedListParams<T> {
 
 export class LinkedList {
   private readonly _logicalManager: LogicalManager;
-  constructor({ positionManager, initialNodes }: LinkedListParams<T>) {
+  constructor({ positionManager, initialNodes }: LinkedListParams<ILinkedListValue>) {
     const initials = !initialNodes ? [] : initialNodes;
 
     this._logicalManager = new LogicalManager({
       positionManager,
       initialNodes: [
-        new Node<T>({
+        new Node<ILinkedListValue>({
           id: generateRandomId(),
           position: new Position(0, 0),
           value: {
@@ -37,13 +37,13 @@ export class LinkedList {
     });
   }
 
-  get nodes(): Array<Node<T>> {
-    return this._logicalManager.nodes as Array<Node<T>>;
+  get nodes(): Array<Node<ILinkedListValue>> {
+    return this._logicalManager.nodes as Array<Node<ILinkedListValue>>;
   }
 
-  public removeNodeAtStart(): Array<Node<T>> {
+  public removeNodeAtStart(): Array<Node<ILinkedListValue>> {
     const newNodes = this.nodes.slice(2);
-    const updatedHead = new Node<T>({
+    const updatedHead = new Node<ILinkedListValue>({
       ...this.nodes[0],
       value: {
         value: "HEAD",
@@ -56,7 +56,7 @@ export class LinkedList {
     return this.nodes;
   }
 
-  public addNodeAtStart(value: string): Array<Node<T>> {
+  public addNodeAtStart(value: string): Array<Node<ILinkedListValue>> {
     const newId = generateRandomId();
 
     const newHead = new Node({
@@ -69,7 +69,7 @@ export class LinkedList {
 
     const newNodes = [
       newHead,
-      new Node<T>({
+      new Node<ILinkedListValue>({
         id: newId,
         position: new Position(0, 0),
         value: {
@@ -85,10 +85,10 @@ export class LinkedList {
     return this.nodes;
   }
 
-  public removeNodeAtEnd(): Array<Node<T>> {
+  public removeNodeAtEnd(): Array<Node<ILinkedListValue>> {
     if(this.nodes.length < 2) {
       const head = this.nodes[0];
-      this.updateNodes([ new Node<T>({
+      this.updateNodes([ new Node<ILinkedListValue>({
         ...head,
         value: {
           ...head.value,
@@ -101,7 +101,7 @@ export class LinkedList {
 
     const newNodes = this.nodes.slice(0, -2);
     const oldTail = this.nodes[this.nodes.length - 2];
-    const newTail = new Node<T>({
+    const newTail = new Node<ILinkedListValue>({
       ...oldTail,
       value: {
         ...oldTail.value,
@@ -114,7 +114,7 @@ export class LinkedList {
     return this.nodes;
   }
 
-  public addNodeAtEnd(value: string): Array<Node<T>> {
+  public addNodeAtEnd(value: string): Array<Node<ILinkedListValue>> {
     const newId = generateRandomId();
 
     this.nodes.at(-1)?.updateValue({
@@ -125,7 +125,7 @@ export class LinkedList {
 
     const newNodes = [
       ...this.nodes,
-      new Node<T>({
+      new Node<ILinkedListValue>({
         id: newId,
         position: new Position(0, 0),
         value: {
@@ -140,7 +140,7 @@ export class LinkedList {
     return this.nodes;
   }
 
-  public removeNodeAtPosition(index: number): Array<Node<T>> {
+  public removeNodeAtPosition(index: number): Array<Node<ILinkedListValue>> {
     if (!this.nodes[index])
       throw new ValidationError([
         { parameter: "index", error: "Invalid index" },
@@ -162,7 +162,7 @@ export class LinkedList {
     return this.nodes;
   }
 
-  public addNodeAtPosition(value: string, index: number): Array<Node<T>> {
+  public addNodeAtPosition(value: string, index: number): Array<Node<ILinkedListValue>> {
     if (!this.nodes[index])
       throw new ValidationError([
         { parameter: "index", error: "Invalid index" },
@@ -190,11 +190,11 @@ export class LinkedList {
     return this.nodes;
   }
 
-  setNodesByJSON(nodes: Array<Node<T>>): void {
+  setNodesByJSON(nodes: Array<Node<ILinkedListValue>>): void {
     const newNodes = nodes.map((node, index) => {
       const next = nodes.find((nxt) => node.connectedNodesIds.includes(nxt.id));
 
-      return new Node<T>({
+      return new Node<ILinkedListValue>({
         id: node.id ?? generateRandomId(),
         position: new Position(0, 0),
         value: {
@@ -209,7 +209,7 @@ export class LinkedList {
     });
 
     this.updateNodes([
-      new Node<T>({
+      new Node<ILinkedListValue>({
         id: generateRandomId(),
         position: new Position(0, 0),
         value: {
@@ -222,7 +222,7 @@ export class LinkedList {
     ]);
   }
 
-  private updateNodes(nodes: Array<Node<T>>): void {
+  private updateNodes(nodes: Array<Node<ILinkedListValue>>): void {
     this._logicalManager.nodes = nodes;
     this._logicalManager.updatePositions();
   }

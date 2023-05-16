@@ -15,10 +15,20 @@ import { Canvas } from "../components/Canvas";
 import { DefaultEdge } from "@/presentation/components/DefaultEdge";
 import { ListNode } from "@/presentation/components/ListNode";
 import { ListManager } from "@/infra/positionManagers/ListManager";
-import { LinkedList } from "@/domain/services/dataStructures/LinkedList";
+import { ILinkedListValue, LinkedList } from "@/domain/services/dataStructures/LinkedList";
 import { Node } from "@/domain/entities/Node";
 import { TEither, left, right } from "@/core/Either";
 import { TApplicationError } from "@/core/Errors";
+
+enum MarkerColors {
+  GREEN = "#0DFA83",
+  PINK = "#FF79C5",
+  PURPLE = "#BF93F6",
+  RED = "#FF555A",
+  CYAN = "#7BE9FB",
+  ORANGE = "#FFB873",
+  YELLOW = "#F1FA94",
+};
 
 const positionManager = new ListManager({ padding: 60 });
 const linkedList = new LinkedList({ positionManager });
@@ -43,30 +53,9 @@ export const useNodes: TUseNodes = ({
 
   const setNodesByJSON = useCallback(
     (nodes: Array<Node<unknown>>): void => {
-      linkedList.setNodesByJSON(nodes);
+      linkedList.setNodesByJSON(nodes as Array<Node<ILinkedListValue>>);
 
-      const edges = linkedList.nodes.reduce((acc, current, index) => {
-        if (!linkedList.nodes[index + 1]) return acc;
-        const nextId = linkedList.nodes[index + 1].id ?? undefined;
-
-        const edge = {
-          id: `e${current.id}-${nextId}`,
-          source: current.id,
-          target: nextId,
-          markerEnd: {
-            type: MarkerType.ArrowClosed,
-            color: "#FF555A",
-          },
-          style: {
-            strokeWidth: 2,
-            stroke: "#FF555A",
-          },
-        };
-
-        return [...acc, edge];
-      }, []);
-
-      setEdges(edges);
+      setEdges(updateEdges());
 
       setNodes(
         linkedList.nodes.map((item) => ({
@@ -168,7 +157,6 @@ export const useNodes: TUseNodes = ({
       try {
         linkedList.removeNodeAtPosition(index);
         setNodes(() => {
-
           setEdges(updateEdges());
 
           return linkedList.nodes.map((item) => ({
@@ -260,9 +248,26 @@ export const useNodes: TUseNodes = ({
     throw new Error("Not implemented yet");
   };
 
-  const emphasisEdgeById = (): void => {
-    throw new Error("Not implemented yet");
-  };
+  const emphasisEdgeById = useCallback(
+    (id: string): void => {
+      setEdges((list) => {
+        return [
+          ...list.map((edge) => ({
+            ...edge,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: edge.id === id ? MarkerColors.GREEN : MarkerColors.RED,
+            },
+            style: {
+              strokeWidth: 2,
+              stroke: edge.id === id ? MarkerColors.GREEN : MarkerColors.RED,
+            },
+          })),
+        ];
+      });
+    },
+    [setEdges, edges]
+  );
 
   const emphasisEdgeByNodeId = (): void => {
     throw new Error("Not implemented yet");
@@ -271,7 +276,7 @@ export const useNodes: TUseNodes = ({
   const updateEdges = (): Edge[] => {
     return linkedList.nodes.reduce((acc, current, index) => {
       if (!linkedList.nodes[index + 1]) return acc;
-      const nextId = linkedList.nodes[index + 1].id ?? undefined;
+      const nextId = current.value.nextNodeId ?? undefined;
 
       const edge = {
         id: `e${current.id}-${nextId}`,
@@ -279,11 +284,11 @@ export const useNodes: TUseNodes = ({
         target: nextId,
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "#FF555A",
+          color: MarkerColors.RED,
         },
         style: {
           strokeWidth: 2,
-          stroke: "#FF555A",
+          stroke: MarkerColors.RED,
         },
       };
 
