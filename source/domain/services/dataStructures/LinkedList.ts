@@ -151,8 +151,6 @@ export class LinkedList {
     const firstHalf = this.nodes.slice(0, index);
     const lastHalf = this.nodes.slice(index + 1);
 
-    console.log({nodes: this.nodes, firstHalf, lastHalf})
-
     firstHalf[firstHalf.length - 1].value.nextNodeId = removedNode.value.nextNodeId;
     firstHalf[firstHalf.length - 1].connectedNodesIds = [removedNode.value.nextNodeId];
 

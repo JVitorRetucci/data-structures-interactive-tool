@@ -15,7 +15,10 @@ import { Canvas } from "../components/Canvas";
 import { DefaultEdge } from "@/presentation/components/DefaultEdge";
 import { ListNode } from "@/presentation/components/ListNode";
 import { ListManager } from "@/infra/positionManagers/ListManager";
-import { ILinkedListValue, LinkedList } from "@/domain/services/dataStructures/LinkedList";
+import {
+  ILinkedListValue,
+  LinkedList,
+} from "@/domain/services/dataStructures/LinkedList";
 import { Node } from "@/domain/entities/Node";
 import { TEither, left, right } from "@/core/Either";
 import { TApplicationError } from "@/core/Errors";
@@ -28,7 +31,7 @@ enum MarkerColors {
   CYAN = "#7BE9FB",
   ORANGE = "#FFB873",
   YELLOW = "#F1FA94",
-};
+}
 
 const positionManager = new ListManager({ padding: 60 });
 const linkedList = new LinkedList({ positionManager });
@@ -273,6 +276,51 @@ export const useNodes: TUseNodes = ({
     throw new Error("Not implemented yet");
   };
 
+  const runThroughList = (index: number): void => {
+    if (index >= nodes.length) {
+      emphasisNodeByPosition(-1);
+      emphasisEdgeById("");
+      return;
+    }
+
+    emphasisNodeByPosition(index);
+
+    setTimeout(() => {
+      emphasisEdgeById(
+        `e${nodes[index].id}-${nodes[index].data.nextNodeId as string}`
+      );
+    }, 600);
+
+    setTimeout(() => {
+      runThroughList(index + 1);
+    }, 1200);
+  };
+  
+  const simulatedAddNodeAtEnd = useCallback(
+    (value: string): void => {
+      runThroughList(0);
+      setTimeout(() => {
+        setNodes(() => {
+          linkedList.addNodeAtEnd(value);
+
+          setEdges(updateEdges());
+
+          return linkedList.nodes.map((item, index) => ({
+            id: item.id,
+            position: item.position,
+            draggable: true,
+            data: {
+              ...item.value,
+              isActive: index === linkedList.nodes.length - 1,
+            },
+            type: "listNode",
+          }));
+        });
+      }, 1250 * nodes.length);
+    },
+    [setNodes, edges]
+  );
+
   const updateEdges = (): Edge[] => {
     return linkedList.nodes.reduce((acc, current, index) => {
       if (!linkedList.nodes[index + 1]) return acc;
@@ -329,5 +377,8 @@ export const useNodes: TUseNodes = ({
     emphasisEdgeById,
     emphasisEdgeByNodeId,
     setNodesByJSON,
+
+    runThroughList,
+    simulatedAddNodeAtEnd
   };
 };

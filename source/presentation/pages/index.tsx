@@ -9,7 +9,6 @@ import { Transition } from "@headlessui/react";
 import { LocalStorageKeys } from "../enums/LocalStorageKeys";
 import { ValidationError } from "@/core/Errors";
 import { ErrorDialog } from "@/presentation/components/ErrorDialog";
-import generateRandomId from "@/utils/generateRandomId";
 
 export default function Home(): JSX.Element {
   const [throttle, setThrottle] = useState(false);
@@ -30,7 +29,8 @@ export default function Home(): JSX.Element {
     removeNodeAtEnd,
     setNodesByJSON,
     nodes,
-    emphasisNodeByPosition,
+    runThroughList,
+    simulatedAddNodeAtEnd
   } = useNodes({ initialNodes: [] });
 
   const buttonStart = (): void => {
@@ -49,6 +49,10 @@ export default function Home(): JSX.Element {
 
   const buttonEnd = (): void => {
     addNodeAtEnd(newValue);
+  };
+
+  const buttonSimulatedEnd = (): void => {
+    simulatedAddNodeAtEnd(newValue);
   };
 
   const buttonRemoveAtStart = (): void => {
@@ -89,7 +93,7 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     setTargetIndex("");
     setNewValue(generateValueBetween(0, 10).toString());
-  }, [nodes]);
+  }, [nodes.length]);
 
   useEffect(() => {
     setIsCodeValid(isCodeValid && !!code);
@@ -223,6 +227,18 @@ export default function Home(): JSX.Element {
             onClick={buttonRemoveAtEnd}
           >
             Remove at end
+          </button>
+          <button
+            className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white col-span-2"
+            onClick={buttonSimulatedEnd}
+          >
+            Simulate add
+          </button>
+          <button
+            className="w-full bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white"
+            onClick={() => runThroughList(0)}
+          >
+            Run
           </button>
         </div>
       </div>

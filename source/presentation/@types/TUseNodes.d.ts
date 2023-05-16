@@ -44,6 +44,10 @@ export interface IUseNodesUtilities<T = undefined> {
   emphasisEdgeByNodeId: (id: string) => void;
 
   setNodesByJSON: (nodes: Array<Node<T>>) => void;
+
+  /* ===== Simulate ===== */
+  runThroughList: (index: number) => void;
+  simulatedAddNodeAtEnd: (value: string) => void;
 }
 
 export type TUseNodes<T = undefined> = (params: IUseNodesParams<T>) => IUseNodesUtilities<T>;
