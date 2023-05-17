@@ -9,6 +9,7 @@ import { Transition } from "@headlessui/react";
 import { LocalStorageKeys } from "../enums/LocalStorageKeys";
 import { ValidationError } from "@/core/Errors";
 import { ErrorDialog } from "@/presentation/components/ErrorDialog";
+import { ActionPanel } from "../components/ActionPanel";
 
 export default function Home(): JSX.Element {
   const [throttle, setThrottle] = useState(false);
@@ -33,10 +34,6 @@ export default function Home(): JSX.Element {
     simulatedAddNodeAtEnd,
   } = useNodes({ initialNodes: [] });
 
-  const buttonStart = (): void => {
-    addNodeAtStart(newValue);
-  };
-
   const buttonAtPosition = (): void => {
     const result = addNodeAtPosition(newValue, Number(targetIndex));
     if (result.isLeft()) {
@@ -45,18 +42,6 @@ export default function Home(): JSX.Element {
         : result.value.message;
       setErrorModal(err);
     }
-  };
-
-  const buttonEnd = (): void => {
-    addNodeAtEnd(newValue);
-  };
-
-  const buttonSimulatedEnd = (): void => {
-    simulatedAddNodeAtEnd(newValue);
-  };
-
-  const buttonRemoveAtStart = (): void => {
-    removeNodeAtStart();
   };
 
   const buttonRemoveAtPosition = (): void => {
@@ -69,9 +54,41 @@ export default function Home(): JSX.Element {
     }
   };
 
-  const buttonRemoveAtEnd = (): void => {
-    removeNodeAtEnd();
-  };
+  const actions = [
+    {
+      label: "Add at start",
+      action: () => addNodeAtStart(newValue),
+    },
+    {
+      label: "Add at position",
+      action: buttonAtPosition,
+    },
+    {
+      label: "Add at end",
+      action: () => addNodeAtEnd(newValue),
+    },
+    {
+      label: "Remove at start",
+      action: removeNodeAtStart,
+    },
+    {
+      label: "Remove at position",
+      action: buttonRemoveAtPosition,
+    },
+    {
+      label: "Remove at end",
+      action: removeNodeAtEnd,
+    },
+    {
+      label: "Simulate add",
+      action: () => simulatedAddNodeAtEnd(newValue),
+      extraClasses: "col-span-2",
+    },
+    {
+      label: "Run",
+      action: () => runThroughList(0),
+    },
+  ]
 
   const handleApplyNodes = (): void => {
     try {
@@ -164,61 +181,21 @@ export default function Home(): JSX.Element {
             </button>
             <React.StrictMode>{Canvas}</React.StrictMode>
           </div>
-          <div className="bg-gradient-to-b from-slate-700 to-slate-800 px-6 py-4 fixed z-10 bottom-8 min-w-[22.5rem] grid gap-4 grid-cols-3 justify-around rounded-md drop-shadow-md">
-            <div className="absolute h-fit items-center justify-center p-2 max-w-[80%] bg-slate-500 -translate-y-full left-1/2 -translate-x-1/2 rounded-t flex w-full space-x-2">
-              <div className="labelled-input">
-                <label htmlFor="value">
-                  Value
-                </label>
-                <input
-                  id="value"
-                  type="number"
-                  value={newValue}
-                  onChange={({ target: { value } }) => setNewValue(value)}
-                />
-              </div>
-              <div className="labelled-input">
-                <label htmlFor="index">
-                  Index
-                </label>
-                <input
-                  id="index"
-                  type="number"
-                  max={nodes.length - 1}
-                  min={0}
-                  value={targetIndex}
-                  onChange={({ target: { value } }) => setTargetIndex(value)}
-                />
-              </div>
-            </div>
-            <button className="btn-full" onClick={buttonStart}>
-              Add at start
-            </button>
-            <button className="btn-full" onClick={buttonAtPosition}>
-              Add at position
-            </button>
-            <button className="btn-full" onClick={buttonEnd}>
-              Add at end
-            </button>
-            <button className="btn-full" onClick={buttonRemoveAtStart}>
-              Remove at start
-            </button>
-            <button className="btn-full" onClick={buttonRemoveAtPosition}>
-              Remove at position
-            </button>
-            <button className="btn-full" onClick={buttonRemoveAtEnd}>
-              Remove at end
-            </button>
-            <button
-              className="btn-full col-span-2"
-              onClick={buttonSimulatedEnd}
-            >
-              Simulate add
-            </button>
-            <button className="btn-full" onClick={() => runThroughList(0)}>
-              Run
-            </button>
-          </div>
+          <ActionPanel
+            value={newValue}
+            onValueUpdate={setNewValue}
+            valueOptions={{
+              type: "number",
+            }}
+            index={targetIndex}
+            onIndexUpdate={setTargetIndex}
+            indexOptions={{
+              type: "number",
+              max: nodes.length - 1,
+              min: 0,
+            }}
+            actions={actions}
+          />
         </div>
       </main>
       <DialogWrapper
