@@ -11,7 +11,7 @@ import {
   useEdgesState,
   useNodesState,
 } from "reactflow";
-import { Canvas } from "../components/Canvas";
+import { Canvas } from "@/presentation/components/Canvas";
 import { DefaultEdge } from "@/presentation/components/DefaultEdge";
 import { ListNode } from "@/presentation/components/ListNode";
 import { ListManager } from "@/infra/positionManagers/ListManager";
@@ -22,16 +22,7 @@ import {
 import { Node } from "@/domain/entities/Node";
 import { TEither, left, right } from "@/core/Either";
 import { TApplicationError } from "@/core/Errors";
-
-enum MarkerColors {
-  GREEN = "#0DFA83",
-  PINK = "#FF79C5",
-  PURPLE = "#BF93F6",
-  RED = "#FF555A",
-  CYAN = "#7BE9FB",
-  ORANGE = "#FFB873",
-  YELLOW = "#F1FA94",
-}
+import { MarkerColors } from "@/presentation/enums/MarkerColors";
 
 const positionManager = new ListManager({ padding: 60 });
 const linkedList = new LinkedList({ positionManager });
@@ -194,27 +185,27 @@ export const useNodes: TUseNodes = ({
     });
   }, [setNodes, nodes, edges]);
 
-  const getNodeAt = (): void => {
+  const getNodeAt = (index: number): Node<undefined> => {
     throw new Error("Not implemented yet");
   };
 
-  const getNodeByValue = (): void => {
+  const getNodeByValue = (value: number | string): Node<undefined> => {
     throw new Error("Not implemented yet");
   };
 
-  const getNodeById = (): void => {
+  const getNodeById = (id: string): Node<undefined> => {
     throw new Error("Not implemented yet");
   };
 
-  const getEdgeAt = (): void => {
+  const getEdgeAt = (index: number): Edge => {
     throw new Error("Not implemented yet");
   };
 
-  const getEdgeById = (): void => {
+  const getEdgeById = (id: string): Edge => {
     throw new Error("Not implemented yet");
   };
 
-  const getEdgeByNodeId = (): void => {
+  const getEdgeByNodeId = (id: string): Edge => {
     throw new Error("Not implemented yet");
   };
 
@@ -295,7 +286,7 @@ export const useNodes: TUseNodes = ({
       runThroughList(index + 1);
     }, 1200);
   };
-  
+
   const simulatedAddNodeAtEnd = useCallback(
     (value: string): void => {
       runThroughList(0);
@@ -379,6 +370,6 @@ export const useNodes: TUseNodes = ({
     setNodesByJSON,
 
     runThroughList,
-    simulatedAddNodeAtEnd
+    simulatedAddNodeAtEnd,
   };
 };
