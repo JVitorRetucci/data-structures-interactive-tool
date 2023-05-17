@@ -3,13 +3,12 @@ import React, { useEffect, useState } from "react";
 import "reactflow/dist/style.css";
 import { useNodes } from "@/presentation/hooks/useNodes";
 import generateValueBetween from "@/utils/generateValueBetween";
-import { Editor } from "@monaco-editor/react";
 import { DialogWrapper } from "@/presentation/components/DialogWrapper";
-import { Transition } from "@headlessui/react";
 import { LocalStorageKeys } from "../enums/LocalStorageKeys";
 import { ValidationError } from "@/core/Errors";
 import { ErrorDialog } from "@/presentation/components/ErrorDialog";
-import { ActionPanel } from "../components/ActionPanel";
+import { ActionPanel } from "@/presentation/components/ActionPanel";
+import { CollapsibleEditor } from "@/presentation/components/CollapsibleEditor";
 
 export default function Home(): JSX.Element {
   const [throttle, setThrottle] = useState(false);
@@ -88,7 +87,7 @@ export default function Home(): JSX.Element {
       label: "Run",
       action: () => runThroughList(0),
     },
-  ]
+  ];
 
   const handleApplyNodes = (): void => {
     try {
@@ -103,7 +102,10 @@ export default function Home(): JSX.Element {
   };
 
   const checkCodeValidation = (): void => {
-    if (!isCodeValid) return;
+    if (!isCodeValid) {
+      setErrorModal("Invalid JSON format.");
+      return
+    };
     setIsOpen(true);
   };
 
@@ -138,47 +140,16 @@ export default function Home(): JSX.Element {
     <>
       <main className="flex w-full bg-slate-700">
         <div className="relative h-screen flex justify-center items-center w-full">
-          <Transition
-            as="div"
-            className="h-full max-h-full flex flex-col"
-            show={showEditor}
-            enter="transform transition duration-200 origin-left"
-            enterFrom="-translate-x-1/2"
-            enterTo="translate-x-0"
-            leave="transform duration-200 transition ease"
-            leaveFrom="translate-x-0"
-            leaveTo="-translate-x-1/2 "
-          >
-            <Editor
-              width="32vw"
-              height="100%"
-              defaultLanguage="json"
-              options={{
-                tabSize: 2,
-              }}
-              theme="vs-dark"
-              onValidate={(validations) => setIsCodeValid(!validations.length)}
-              onChange={(value: string) => setCode(value)}
-              value={code}
-              defaultValue="[]"
-              className="shrink pt-4 bg-editor"
-            />
-            <div className="h-fit flex justify-center items-center p-4">
-              <button
-                className="btn w-full active:brightness-50"
-                onClick={checkCodeValidation}
-              >
-                Enter
-              </button>
-            </div>
-          </Transition>
-          <div className="h-full w-full bg-white relative">
-            <button
-              className="min-w-[7.5rem] bg-gradient-to-b from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-800 focus:ring ring-slate-600 text-white absolute top-10 left-0 z-10 p-4 rounded-r-md"
-              onClick={() => setShowEditor(!showEditor)}
-            >
-              {showEditor ? "Hide" : "Input JSON"}
-            </button>
+          <CollapsibleEditor
+            showEditor={showEditor}
+            value={code}
+            defaultValue="[]"
+            onValidate={(validations) => setIsCodeValid(!validations.length)}
+            onChange={(value: string) => setCode(value)}
+            onSubmit={checkCodeValidation}
+            toggleOpen={setShowEditor}
+          />
+          <div className="h-full w-full bg-editor relative">
             <React.StrictMode>{Canvas}</React.StrictMode>
           </div>
           <ActionPanel
