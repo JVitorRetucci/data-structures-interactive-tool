@@ -25,7 +25,8 @@ export const ListNode = ({
         className={classNames(
           "flex flex-col justify-center w-fit border-black border rounded bg-white",
           {
-            "ring-4 ring-dracula-red": RESERVED_VALUES.includes(value) && !isActive,
+            "ring-4 ring-dracula-red":
+              RESERVED_VALUES.includes(value) && !isActive,
             "ring-4 ring-dracula-green": isActive,
           }
         )}

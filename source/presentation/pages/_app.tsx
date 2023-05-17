@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import "@/presentation/styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-  return <Component {...pageProps} />
+  return <Component {...pageProps} />;
 }
 
-export default MyApp
+export default MyApp;

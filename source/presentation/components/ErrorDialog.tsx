@@ -16,9 +16,7 @@ export const ErrorDialog: FC<IErrorDialog> = ({
 }): JSX.Element => {
   return (
     <DialogWrapper isOpen={isOpen} setIsOpen={close}>
-      <h2 className="w-full text-center text-2xl font-semibold mb-5">
-        Error!
-      </h2>
+      <h2 className="w-full text-center text-2xl font-semibold mb-5">Error!</h2>
       <p className="block w-full text-center mb-4">{message}</p>
       <div className="flex flex-col md:flex-row justify-center items-center gap-4">
         <button

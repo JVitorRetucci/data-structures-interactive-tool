@@ -14,19 +14,22 @@ export class Node<T = string> {
   connectedNodesIds: string[];
 
   constructor({
-    id, position, value, connectedNodesIds = []
-  }: INodeConstructorParams<T>){
+    id,
+    position,
+    value,
+    connectedNodesIds = [],
+  }: INodeConstructorParams<T>) {
     this.id = id;
     this.position = position;
     this.value = value;
-    this.connectedNodesIds = connectedNodesIds
+    this.connectedNodesIds = connectedNodesIds;
   }
 
-  public updateValue(value: T): void{
+  public updateValue(value: T): void {
     this.value = value;
   }
 
-  public updateConnectedNodesIds(values: string[]): void{
+  public updateConnectedNodesIds(values: string[]): void {
     this.connectedNodesIds = values;
   }
 }

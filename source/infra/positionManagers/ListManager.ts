@@ -24,21 +24,21 @@ export class ListManager implements PositionManager {
     let sum: number = this._padding;
 
     const positions = nodes.reduce((acc, current, index) => {
-      const prev = nodes[index-1];
-      
+      const prev = nodes[index - 1];
+
       if (!prev)
         return {
           [current.id]: new Position(sum, this._padding),
         };
 
-        sum += 200;
+      sum += 200;
 
-        return {
-          ...acc,
-          [current.id]: new Position(sum, this._padding),
-        };
-      }, {});
-      
+      return {
+        ...acc,
+        [current.id]: new Position(sum, this._padding),
+      };
+    }, {});
+
     return right(positions);
   }
 
@@ -47,7 +47,8 @@ export class ListManager implements PositionManager {
     targetId: string
   ): TEither<TApplicationError, Record<NodeId, Position>> {
     const targetIndex = nodes.findIndex((node) => node.id === targetId);
-    if(targetIndex === -1) return left(new NotFoundError(new Error("Node not found")));
+    if (targetIndex === -1)
+      return left(new NotFoundError(new Error("Node not found")));
 
     const positions = nodes.reduce((acc, current, index) => {
       if (index < targetIndex) return acc;

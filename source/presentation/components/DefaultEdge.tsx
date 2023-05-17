@@ -1,4 +1,4 @@
-import { getSmoothStepPath, MarkerType, SmoothStepEdgeProps } from 'reactflow';
+import { getSmoothStepPath, MarkerType, SmoothStepEdgeProps } from "reactflow";
 
 export const DefaultEdge = ({
   id,
@@ -9,10 +9,10 @@ export const DefaultEdge = ({
   sourcePosition,
   targetPosition,
   style = {
-    strokeWidth: 2
+    strokeWidth: 2,
   },
   markerEnd = MarkerType.ArrowClosed,
-}: SmoothStepEdgeProps ): JSX.Element => {
+}: SmoothStepEdgeProps): JSX.Element => {
   const [edgePath] = getSmoothStepPath({
     sourceX,
     sourceY,
@@ -33,4 +33,4 @@ export const DefaultEdge = ({
       />
     </>
   );
-}
+};

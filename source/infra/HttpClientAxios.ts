@@ -1,5 +1,5 @@
 import cookies from "js-cookie";
-import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
 import { IHttpClient, HttpMethod, IHttpResponse } from "@/services/http";
 import { createQueryString } from "@/utils/queryString";
 
@@ -36,11 +36,17 @@ export class HttpClientAxios implements IHttpClient {
     payload?: Payload | undefined;
     baseURL?: string | undefined;
   }): Promise<IHttpResponse<Response>> {
-      const response = await client({ url, method, params, baseURL, data: payload });
+    const response = await client({
+      url,
+      method,
+      params,
+      baseURL,
+      data: payload,
+    });
 
-      return await Promise.resolve({
-        statusCode: response.status,
-        body: response.data,
-      });
+    return await Promise.resolve({
+      statusCode: response.status,
+      body: response.data,
+    });
   }
 }

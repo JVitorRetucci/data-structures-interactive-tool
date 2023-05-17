@@ -104,8 +104,8 @@ export default function Home(): JSX.Element {
   const checkCodeValidation = (): void => {
     if (!isCodeValid) {
       setErrorModal("Invalid JSON format.");
-      return
-    };
+      return;
+    }
     setIsOpen(true);
   };
 

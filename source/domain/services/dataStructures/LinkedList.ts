@@ -17,7 +17,10 @@ export interface LinkedListParams<T> {
 
 export class LinkedList {
   private readonly _logicalManager: LogicalManager;
-  constructor({ positionManager, initialNodes }: LinkedListParams<ILinkedListValue>) {
+  constructor({
+    positionManager,
+    initialNodes,
+  }: LinkedListParams<ILinkedListValue>) {
     const initials = !initialNodes ? [] : initialNodes;
 
     this._logicalManager = new LogicalManager({
@@ -86,16 +89,18 @@ export class LinkedList {
   }
 
   public removeNodeAtEnd(): Array<Node<ILinkedListValue>> {
-    if(this.nodes.length < 2) {
+    if (this.nodes.length < 2) {
       const head = this.nodes[0];
-      this.updateNodes([ new Node<ILinkedListValue>({
-        ...head,
-        value: {
-          ...head.value,
-          nextNodeId: "TAIL",
-        },
-        connectedNodesIds: [],
-      })]);
+      this.updateNodes([
+        new Node<ILinkedListValue>({
+          ...head,
+          value: {
+            ...head.value,
+            nextNodeId: "TAIL",
+          },
+          connectedNodesIds: [],
+        }),
+      ]);
       return this.nodes;
     }
 
@@ -151,8 +156,11 @@ export class LinkedList {
     const firstHalf = this.nodes.slice(0, index);
     const lastHalf = this.nodes.slice(index + 1);
 
-    firstHalf[firstHalf.length - 1].value.nextNodeId = removedNode.value.nextNodeId;
-    firstHalf[firstHalf.length - 1].connectedNodesIds = [removedNode.value.nextNodeId];
+    firstHalf[firstHalf.length - 1].value.nextNodeId =
+      removedNode.value.nextNodeId;
+    firstHalf[firstHalf.length - 1].connectedNodesIds = [
+      removedNode.value.nextNodeId,
+    ];
 
     const newNodes = [...firstHalf, ...lastHalf];
 
@@ -160,7 +168,10 @@ export class LinkedList {
     return this.nodes;
   }
 
-  public addNodeAtPosition(value: string, index: number): Array<Node<ILinkedListValue>> {
+  public addNodeAtPosition(
+    value: string,
+    index: number
+  ): Array<Node<ILinkedListValue>> {
     if (!this.nodes[index])
       throw new ValidationError([
         { parameter: "index", error: "Invalid index" },

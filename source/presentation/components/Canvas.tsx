@@ -1,6 +1,10 @@
 import ReactFlow, {
   Background,
-  BackgroundVariant, Controls, MarkerType, MiniMap, ReactFlowProps
+  BackgroundVariant,
+  Controls,
+  MarkerType,
+  MiniMap,
+  ReactFlowProps,
 } from "reactflow";
 
 export interface ICanvasProps extends ReactFlowProps {}
@@ -23,8 +27,8 @@ export const Canvas = ({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      fitViewOptions={{ 
-        padding: 4
+      fitViewOptions={{
+        padding: 4,
       }}
       defaultEdgeOptions={{
         type: "default",
