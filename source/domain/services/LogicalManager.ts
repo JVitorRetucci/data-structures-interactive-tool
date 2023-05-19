@@ -60,22 +60,9 @@ export class LogicalManager {
     );
     if (result.isLeft()) throw result.value;
 
-    const targetNode = this.nodes.find(
-      (_node) => _node.id in result.value
-    ) as Node;
-    targetNode.position = result.value[targetNode.id];
-    this.setTargetNode(targetNode);
+    this.nodes = this.nodes.map((_node) => {
+      _node.position = result.value[_node.id];
+      return _node;
+    });
   }
-
-  // getPositions() {
-  //   // TODO: Implement getPositions() method;
-  //   this._positionManager.getPositions(this.nodes);
-  //   throw new Error("Method not implemented");
-  // }
-
-  // getTargetPosition(node: Node): Position {
-  //   // TODO: Implement getTargetPosition() method;
-  //   this._positionManager.getTargetPosition(node);
-  //   throw new Error("Method not implemented");
-  // }
 }

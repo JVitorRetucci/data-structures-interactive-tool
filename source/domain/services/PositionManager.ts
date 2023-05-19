@@ -15,6 +15,4 @@ export abstract class PositionManager {
     nodes: Node[],
     targetId: string
   ): TEither<TApplicationError, Record<NodeId, Position>>;
-  // abstract getPositions(nodes: Node[]): TEither<TApplicationError, Record<NodeId, Position>>;
-  // abstract getTargetPosition(node: Node): TEither<TApplicationError, Record<NodeId, Position>>;
 }
