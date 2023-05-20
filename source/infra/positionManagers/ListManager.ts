@@ -11,10 +11,14 @@ export interface ListManagerParams {
   padding: number;
 }
 
+const DEFAULT_CONFIG: ListManagerParams = {
+  padding: 0,
+} as const;
+
 export class ListManager implements PositionManager {
   private readonly _padding: number;
 
-  constructor({ padding }: ListManagerParams) {
+  constructor({ padding }: ListManagerParams = {...DEFAULT_CONFIG}) {
     this._padding = padding;
   }
 
