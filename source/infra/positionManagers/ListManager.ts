@@ -62,7 +62,7 @@ export class ListManager implements PositionManager {
           [current.id]: new Position(this._padding, this._padding),
         };
 
-      const lastNodePosition = nodes[index - 1].position;
+      const lastNodePosition: Position = acc[nodes[index-1].id] ?? nodes[index - 1].position;
 
       return {
         ...acc,
