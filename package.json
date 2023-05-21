@@ -10,7 +10,7 @@
     "prepare": "husky install",
     "release": "standard-version",
     "cypress:open": "cypress open",
-    "dev": "env-cmd next dev",
+    "dev": "env-cmd next dev $npm_package_config_nextpath",
     "build": "env-cmd --no-override next build $npm_package_config_nextpath && next export $npm_package_config_nextpath -o dist",
     "start": "env-cmd next start $npm_package_config_nextpath"
   },
