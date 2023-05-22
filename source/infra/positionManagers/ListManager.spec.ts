@@ -67,15 +67,24 @@ describe("ListManager", () => {
         })
     );
 
-    const response = manager.updateTargetPosition(nodes, idList[2]);
+    const response1 = manager.updateTargetPosition(nodes, idList[2]);
       
-    expect(response.isRight()).toBeTruthy();
-    expect(response.value).toStrictEqual({
-      // [idList[0]]: new Position(0, 0),
-      // [idList[1]]: new Position(0, 0),
+    expect(response1.isRight()).toBeTruthy();
+    expect(response1.value).toStrictEqual({
       [idList[2]]: new Position(200, 40),
       [idList[3]]: new Position(400, 40),
       [idList[4]]: new Position(600, 40),
+    });
+
+    const response2 = manager.updateTargetPosition(nodes, idList[0]);
+      
+    expect(response2.isRight()).toBeTruthy();
+    expect(response2.value).toStrictEqual({
+      [idList[0]]: new Position(40, 40),
+      [idList[1]]: new Position(240, 40),
+      [idList[2]]: new Position(440, 40),
+      [idList[3]]: new Position(640, 40),
+      [idList[4]]: new Position(840, 40),
     });
   });
 
