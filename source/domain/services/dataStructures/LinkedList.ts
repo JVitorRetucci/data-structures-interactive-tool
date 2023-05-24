@@ -19,9 +19,8 @@ export class LinkedList {
   private readonly _logicalManager: LogicalManager;
   constructor({
     positionManager,
-    initialNodes,
+    initialNodes = [],
   }: LinkedListParams<ILinkedListValue>) {
-    const initials = !initialNodes ? [] : initialNodes;
 
     this._logicalManager = new LogicalManager({
       positionManager,
@@ -31,13 +30,16 @@ export class LinkedList {
           position: new Position(0, 0),
           value: {
             value: "HEAD",
-            nextNodeId: !initials[0] ? "" : initials[0].id,
+            nextNodeId: !initialNodes[0] ? "" : initialNodes[0].id,
           },
           connectedNodesIds: [],
         }),
-        ...initials,
+        ...initialNodes,
       ],
     });
+
+    this.nodes[this.nodes.length - 1].value.nextNodeId = "TAIL";
+    this.nodes[this.nodes.length - 1].updateConnectedNodesIds(["TAIL"]);
   }
 
   get nodes(): Array<Node<ILinkedListValue>> {
@@ -77,9 +79,9 @@ export class LinkedList {
         position: new Position(0, 0),
         value: {
           value: value,
-          nextNodeId: this.nodes.at(1)?.id ?? "TAIL",
+          nextNodeId: !this.nodes[1] ? "TAIL" : this.nodes[1].id,
         },
-        connectedNodesIds: [this.nodes.at(1)?.id as string],
+        connectedNodesIds: [!this.nodes[1] ? "TAIL" : this.nodes[1].id],
       }),
       ...this.nodes.filter((_, index) => index !== 0),
     ];
@@ -90,17 +92,6 @@ export class LinkedList {
 
   public removeNodeAtEnd(): Array<Node<ILinkedListValue>> {
     if (this.nodes.length < 2) {
-      const head = this.nodes[0];
-      this.updateNodes([
-        new Node<ILinkedListValue>({
-          ...head,
-          value: {
-            ...head.value,
-            nextNodeId: "TAIL",
-          },
-          connectedNodesIds: [],
-        }),
-      ]);
       return this.nodes;
     }
 
@@ -122,11 +113,11 @@ export class LinkedList {
   public addNodeAtEnd(value: string): Array<Node<ILinkedListValue>> {
     const newId = generateRandomId();
 
-    this.nodes.at(-1)?.updateValue({
-      value: this.nodes.at(-1)?.value.value as string,
+    this.nodes[this.nodes.length - 1].updateValue({
+      value: this.nodes[this.nodes.length - 1].value.value,
       nextNodeId: newId,
     });
-    this.nodes.at(-1)?.updateConnectedNodesIds([newId]);
+    this.nodes[this.nodes.length - 1].updateConnectedNodesIds([newId]);
 
     const newNodes = [
       ...this.nodes,
@@ -146,15 +137,30 @@ export class LinkedList {
   }
 
   public removeNodeAtPosition(index: number): Array<Node<ILinkedListValue>> {
-    if (!this.nodes[index])
+    const validNodes = this.nodes.slice(1);
+    if (!validNodes[index])
       throw new ValidationError([
         { parameter: "index", error: "Invalid index" },
       ]);
 
-    const removedNode = this.nodes[index];
+    const removedNode: Node<ILinkedListValue> = validNodes[index];
 
-    const firstHalf = this.nodes.slice(0, index);
-    const lastHalf = this.nodes.slice(index + 1);
+    const firstHalf = validNodes.slice(0, index);
+    const lastHalf = validNodes.slice(index + 1);
+
+    if(firstHalf.length < 1) {
+      const updatedHead = new Node<ILinkedListValue>({
+        ...this.nodes[0],
+        value: {
+          ...this.nodes[0].value,
+          nextNodeId: removedNode.value.nextNodeId
+        },
+        connectedNodesIds: removedNode.connectedNodesIds
+      })
+
+      this.updateNodes([updatedHead]);
+      return this.nodes;
+    }
 
     firstHalf[firstHalf.length - 1].value.nextNodeId =
       removedNode.value.nextNodeId;
@@ -162,7 +168,7 @@ export class LinkedList {
       removedNode.value.nextNodeId,
     ];
 
-    const newNodes = [...firstHalf, ...lastHalf];
+    const newNodes = [this.nodes[0], ...firstHalf, ...lastHalf];
 
     this.updateNodes(newNodes);
     return this.nodes;
@@ -213,7 +219,7 @@ export class LinkedList {
               ? nodes[index + 1].id
               : "TAIL",
         },
-        connectedNodesIds: !next?.id ? [] : [next?.id],
+        connectedNodesIds: !next ? [] : [next.id],
       });
     });
 

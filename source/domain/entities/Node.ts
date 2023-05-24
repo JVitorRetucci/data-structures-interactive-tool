@@ -4,7 +4,7 @@ export interface INodeConstructorParams<T> {
   id: string;
   position: Position;
   value: T;
-  connectedNodesIds: string[];
+  connectedNodesIds?: string[];
 }
 
 export class Node<T = string> {
