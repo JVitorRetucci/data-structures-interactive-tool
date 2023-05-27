@@ -10,9 +10,20 @@ import { ErrorDialog } from "@/presentation/components/ErrorDialog";
 import { ActionPanel } from "@/presentation/components/ActionPanel";
 import { CollapsibleEditor } from "@/presentation/components/CollapsibleEditor";
 
+const initialEditorValue = `[
+  {
+    "id": "#c329ef",
+    "value": {
+      "value": 5,
+      "nextNodeId": "#a7b1d8"
+    },
+    "connectedNodesIds": ["#a7b1d8"]
+  }
+]`
+
 export default function Home(): JSX.Element {
   const [throttle, setThrottle] = useState(false);
-  const [code, setCode] = useState("[]");
+  const [code, setCode] = useState(initialEditorValue);
   const [targetIndex, setTargetIndex] = useState<string>("");
   const [newValue, setNewValue] = useState<string>("");
   const [showEditor, setShowEditor] = useState(false);
@@ -143,7 +154,7 @@ export default function Home(): JSX.Element {
           <CollapsibleEditor
             showEditor={showEditor}
             value={code}
-            defaultValue="[]"
+            defaultValue={initialEditorValue}
             onValidate={(validations) => setIsCodeValid(!validations.length)}
             onChange={(value: string) => setCode(value)}
             onSubmit={checkCodeValidation}
