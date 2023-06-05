@@ -95,7 +95,7 @@ export default function Home(): JSX.Element {
       extraClasses: "col-span-2",
     },
     {
-      label: "Run",
+      label: "Run through",
       action: () => runThroughList(0),
     },
   ];
