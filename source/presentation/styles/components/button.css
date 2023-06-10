@@ -1,5 +1,6 @@
 .btn {
-  @apply bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white outline-none focus:ring ring-slate-600;
+  @apply bg-gray-500 hover:bg-gradient-to-br from-gray-400 to-gray-500 p-2 rounded text-white outline-none 
+  focus:ring ring-slate-600 disabled:pointer-events-none disabled:contrast-75 disabled:opacity-80;
 }
 
 .btn-full {

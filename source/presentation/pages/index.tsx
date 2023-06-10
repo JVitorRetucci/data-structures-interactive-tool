@@ -7,7 +7,7 @@ import { DialogWrapper } from "@/presentation/components/DialogWrapper";
 import { LocalStorageKeys } from "../enums/LocalStorageKeys";
 import { ValidationError } from "@/core/Errors";
 import { ErrorDialog } from "@/presentation/components/ErrorDialog";
-import { ActionPanel } from "@/presentation/components/ActionPanel";
+import { ActionPanel, IActionOptions } from "@/presentation/components/ActionPanel";
 import { CollapsibleEditor } from "@/presentation/components/CollapsibleEditor";
 
 const initialEditorValue = `[
@@ -19,7 +19,7 @@ const initialEditorValue = `[
     },
     "connectedNodesIds": ["#a7b1d8"]
   }
-]`
+]`;
 
 export default function Home(): JSX.Element {
   const [throttle, setThrottle] = useState(false);
@@ -32,6 +32,7 @@ export default function Home(): JSX.Element {
   const [isCodeValid, setIsCodeValid] = useState(true);
   const {
     Canvas,
+    nodes,
     addNodeAtStart,
     addNodeAtPosition,
     addNodeAtEnd,
@@ -39,7 +40,6 @@ export default function Home(): JSX.Element {
     removeNodeAtPosition,
     removeNodeAtEnd,
     setNodesByJSON,
-    nodes,
     runThroughList,
     simulatedAddNodeAtEnd,
   } = useNodes({ initialNodes: [] });
@@ -64,7 +64,7 @@ export default function Home(): JSX.Element {
     }
   };
 
-  const actions = [
+  const actions: IActionOptions[] = [
     {
       label: "Add at start",
       action: () => addNodeAtStart(newValue),
@@ -92,7 +92,6 @@ export default function Home(): JSX.Element {
     {
       label: "Simulate add",
       action: () => simulatedAddNodeAtEnd(newValue),
-      extraClasses: "col-span-2",
     },
     {
       label: "Run through",
