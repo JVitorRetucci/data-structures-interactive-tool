@@ -7,7 +7,10 @@ import { DialogWrapper } from "@/presentation/components/DialogWrapper";
 import { LocalStorageKeys } from "../enums/LocalStorageKeys";
 import { ValidationError } from "@/core/Errors";
 import { ErrorDialog } from "@/presentation/components/ErrorDialog";
-import { ActionPanel, IActionOptions } from "@/presentation/components/ActionPanel";
+import {
+  ActionPanel,
+  IActionOptions,
+} from "@/presentation/components/ActionPanel";
 import { CollapsibleEditor } from "@/presentation/components/CollapsibleEditor";
 
 const initialEditorValue = `[
@@ -68,34 +71,66 @@ export default function Home(): JSX.Element {
     {
       label: "Add at start",
       action: () => addNodeAtStart(newValue),
+      params: {
+        hasValueInput: true,
+        hasIndexInput: false,
+      },
     },
     {
       label: "Add at position",
       action: buttonAtPosition,
+      params: {
+        hasValueInput: true,
+        hasIndexInput: true,
+      },
     },
     {
       label: "Add at end",
       action: () => addNodeAtEnd(newValue),
+      params: {
+        hasValueInput: true,
+        hasIndexInput: false,
+      },
     },
     {
       label: "Remove at start",
       action: removeNodeAtStart,
+      params: {
+        hasValueInput: false,
+        hasIndexInput: false,
+      },
     },
     {
       label: "Remove at position",
       action: buttonRemoveAtPosition,
+      params: {
+        hasValueInput: false,
+        hasIndexInput: true,
+      },
     },
     {
       label: "Remove at end",
       action: removeNodeAtEnd,
+      params: {
+        hasValueInput: false,
+        hasIndexInput: false,
+      },
     },
     {
       label: "Simulate add",
       action: () => simulatedAddNodeAtEnd(newValue),
+      params: {
+        hasValueInput: true,
+        hasIndexInput: false,
+      },
     },
     {
       label: "Run through",
       action: () => runThroughList(0),
+      params: {
+        hasValueInput: false,
+        hasIndexInput: false,
+      },
     },
   ];
 

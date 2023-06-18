@@ -10,6 +10,10 @@ type TInputProps = Omit<
 export interface IActionOptions {
   label: string;
   action: () => void;
+  params: {
+    hasValueInput: boolean;
+    hasIndexInput: boolean;
+  };
   disabled?: boolean;
 }
 
@@ -36,6 +40,10 @@ export const ActionPanel: FC<IActionPanelProps> = ({
     action: () => {},
     label: "Select",
     disabled: true,
+    params: {
+      hasValueInput: false,
+      hasIndexInput: false,
+    },
   });
 
   useEffect(() => {
@@ -55,29 +63,35 @@ export const ActionPanel: FC<IActionPanelProps> = ({
       className="bg-gradient-to-b from-slate-700 to-slate-800 px-6 py-4 fixed z-10 bottom-8 min-w-[22.5rem] 
     grid gap-4 grid-cols-3 justify-around rounded-md drop-shadow-md"
     >
-      <div
-        className="absolute h-fit items-center justify-center p-2 max-w-[80%] bg-slate-500 -translate-y-full 
+      {Object.values(currentAction.params).some((value) => value) && (
+        <div
+          className="absolute h-fit items-center justify-center p-2 max-w-[80%] bg-slate-500 -translate-y-full 
       left-1/2 -translate-x-1/2 rounded-t flex w-full space-x-2"
-      >
-        <div className="labelled-input">
-          <label htmlFor="value">Value</label>
-          <input
-            {...valueOptions}
-            id="value"
-            value={value}
-            onChange={({ target: { value } }) => onValueUpdate(value)}
-          />
+        >
+          {currentAction.params.hasValueInput && (
+            <div className="labelled-input">
+              <label htmlFor="value">Value</label>
+              <input
+                {...valueOptions}
+                id="value"
+                value={value}
+                onChange={({ target: { value } }) => onValueUpdate(value)}
+              />
+            </div>
+          )}
+          {currentAction.params.hasIndexInput && (
+            <div className="labelled-input">
+              <label htmlFor="index">Index</label>
+              <input
+                {...indexOptions}
+                id="index"
+                value={index}
+                onChange={({ target: { value } }) => onIndexUpdate(value)}
+              />
+            </div>
+          )}
         </div>
-        <div className="labelled-input">
-          <label htmlFor="index">Index</label>
-          <input
-            {...indexOptions}
-            id="index"
-            value={index}
-            onChange={({ target: { value } }) => onIndexUpdate(value)}
-          />
-        </div>
-      </div>
+      )}
       <Listbox value={currentAction} onChange={setCurrentAction}>
         <div className="col-span-2 relative">
           <Listbox.Button className="btn-full text-left">
